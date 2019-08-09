@@ -1,0 +1,11 @@
+{
+    "autoload": {
+        "psr-4": {"jjok\\TodoTwo\\": "src/"}
+    },
+    "require": {
+        "ramsey/uuid": "^3.8"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8.3"
+    }
+}
