@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace jjok\TodoTwo\Domain\Events;
+namespace jjok\TodoTwo\Domain\Task\Events;
 
 use jjok\TodoTwo\Domain\Task\Event;
 use jjok\TodoTwo\Domain\Task\Id;

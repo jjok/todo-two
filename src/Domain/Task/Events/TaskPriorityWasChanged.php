@@ -1,18 +1,18 @@
-<?php
+<?php declare(strict_types=1);
 
-namespace jjok\TodoTwo\Domain\Events;
+namespace jjok\TodoTwo\Domain\Task\Events;
 
 use jjok\TodoTwo\Domain\Task\Event;
 use jjok\TodoTwo\Domain\Task\Id;
 
-final class TaskWasRenamed implements Event
+final class TaskPriorityWasChanged implements Event
 {
-    public static function with(Id $taskId, string $newName) : self
+    public static function with(Id $taskId, int $newPriority) : self
     {
-        return new self($taskId->toString(), $newName, time());
+        return new self($taskId->toString(), $newPriority, time());
     }
 
-    public function __construct(string $taskId, string $to, int $timestamp)
+    public function __construct(string $taskId, int $to, int $timestamp)
     {
         $this->taskId = $taskId;
         $this->to = $to;
@@ -26,7 +26,7 @@ final class TaskWasRenamed implements Event
         return $this->taskId;
     }
 
-    public function to() : string
+    public function to() : int
     {
         return $this->to;
     }

@@ -2,10 +2,10 @@
 
 namespace jjok\TodoTwo\Domain;
 
-use jjok\TodoTwo\Domain\Events\TaskPriorityWasChanged;
-use jjok\TodoTwo\Domain\Events\TaskWasCompleted;
-use jjok\TodoTwo\Domain\Events\TaskWasCreated;
-use jjok\TodoTwo\Domain\Events\TaskWasRenamed;
+use jjok\TodoTwo\Domain\Task\Events\TaskPriorityWasChanged;
+use jjok\TodoTwo\Domain\Task\Events\TaskWasCompleted;
+use jjok\TodoTwo\Domain\Task\Events\TaskWasCreated;
+use jjok\TodoTwo\Domain\Task\Events\TaskWasRenamed;
 use jjok\TodoTwo\Domain\Task\Id;
 use jjok\TodoTwo\Domain\Task\Event;
 use PHPUnit\Framework\TestCase;
