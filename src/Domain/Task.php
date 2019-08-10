@@ -4,6 +4,7 @@ namespace jjok\TodoTwo\Domain;
 
 use jjok\TodoTwo\Domain\Events\TaskWasCompleted;
 use jjok\TodoTwo\Domain\Events\TaskWasCreated;
+use jjok\TodoTwo\Domain\Events\TaskWasRenamed;
 use jjok\TodoTwo\Domain\Task\Id;
 use jjok\TodoTwo\Domain\Task\Event;
 
@@ -53,6 +54,16 @@ final class Task
         $this->apply($taskWasCompleted);
     }
 
+    public function rename(string $to) : void
+    {
+        $taskWasRenamed = TaskWasRenamed::with($this->id, $to);
+
+        $this->recordThat($taskWasRenamed);
+        $this->apply($taskWasRenamed);
+    }
+
+    public function updatePriority() : void {}
+
     private function apply(Event $event) : void
     {
         if($event->taskId() !== $this->id->toString()) {
@@ -66,15 +77,19 @@ final class Task
 
         switch(get_class($event)) {
             case TaskWasCompleted::class:
+                /** @var TaskWasCompleted $event */
                 $this->lastCompletedAt = $event->timestamp();
                 break;
+
+            case TaskWasRenamed::class:
+                /** @var TaskWasRenamed $event */
+                $this->name = $event->to();
+                break;
+
             default:
                 throw new \InvalidArgumentException(
                     sprintf('Unexpected event. %s can not be applied to %s', get_class($event), __CLASS__)
                 );
         }
     }
-
-    public function updateName() : void {}
-    public function updatePriority() : void {}
 }

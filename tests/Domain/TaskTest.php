@@ -4,6 +4,7 @@ namespace jjok\TodoTwo\Domain;
 
 use jjok\TodoTwo\Domain\Events\TaskWasCompleted;
 use jjok\TodoTwo\Domain\Events\TaskWasCreated;
+use jjok\TodoTwo\Domain\Events\TaskWasRenamed;
 use jjok\TodoTwo\Domain\Task\Id;
 use jjok\TodoTwo\Domain\Task\Event;
 use PHPUnit\Framework\TestCase;
@@ -110,6 +111,31 @@ final class TaskTest extends TestCase
         $this->expectExceptionMessage('can not be applied to task');
 
         Task::fromEvents($taskWasCreated, $taskWasCompleted);
+    }
+
+    /** @test */
+    public function an_existing_task_can_be_renamed() : void
+    {
+        $task = $this->previouslyCreatedEvent();
+        $newName = 'The new name for the task';
+
+        $task->rename($newName);
+
+        $this->assertTaskWasRecentlyRenamed($newName, $task);
+    }
+
+    private function assertTaskWasRecentlyRenamed(string $newName, Task $task) : void
+    {
+        $events = $task->releaseEvents();
+
+        /** @var TaskWasRenamed $taskWasRenamed */
+        [$taskWasRenamed] = $events;
+
+        $this->assertInstanceOf(TaskWasRenamed::class, $taskWasRenamed);
+
+        $this->assertTaskIdIsValid($taskWasRenamed);
+        $this->assertSame($newName, $taskWasRenamed->to());
+        $this->assertEventHappenedRecently($taskWasRenamed);
     }
 
     private function assertTaskIdIsValid(Event $event) : void
