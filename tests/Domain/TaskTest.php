@@ -2,6 +2,7 @@
 
 namespace jjok\TodoTwo\Domain;
 
+use jjok\TodoTwo\Domain\Events\TaskPriorityWasChanged;
 use jjok\TodoTwo\Domain\Events\TaskWasCompleted;
 use jjok\TodoTwo\Domain\Events\TaskWasCreated;
 use jjok\TodoTwo\Domain\Events\TaskWasRenamed;
@@ -136,6 +137,36 @@ final class TaskTest extends TestCase
         $this->assertTaskIdIsValid($taskWasRenamed);
         $this->assertSame($newName, $taskWasRenamed->to());
         $this->assertEventHappenedRecently($taskWasRenamed);
+    }
+
+    /**
+     * @test
+     * @testWith [ 10]
+     *           [ 30]
+     *           [ 70]
+     *           [100]
+     */
+    public function the_priority_of_an_existing_task_can_be_updated(int $priority) : void
+    {
+        $task = $this->previouslyCreatedEvent();
+
+        $task->updatePriority($priority);
+
+        $this->assertPriorityOfTaskWasRecentlyChanged($priority, $task);
+    }
+
+    private function assertPriorityOfTaskWasRecentlyChanged(int $newPriority, Task $task) : void
+    {
+        $events = $task->releaseEvents();
+
+        /** @var TaskPriorityWasChanged $taskPriorityWasChanged */
+        [$taskPriorityWasChanged] = $events;
+
+        $this->assertInstanceOf(TaskPriorityWasChanged::class, $taskPriorityWasChanged);
+
+        $this->assertTaskIdIsValid($taskPriorityWasChanged);
+        $this->assertSame($newPriority, $taskPriorityWasChanged->to());
+        $this->assertEventHappenedRecently($taskPriorityWasChanged);
     }
 
     private function assertTaskIdIsValid(Event $event) : void

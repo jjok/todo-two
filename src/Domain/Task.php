@@ -2,6 +2,7 @@
 
 namespace jjok\TodoTwo\Domain;
 
+use jjok\TodoTwo\Domain\Events\TaskPriorityWasChanged;
 use jjok\TodoTwo\Domain\Events\TaskWasCompleted;
 use jjok\TodoTwo\Domain\Events\TaskWasCreated;
 use jjok\TodoTwo\Domain\Events\TaskWasRenamed;
@@ -16,7 +17,6 @@ final class Task
     {
         $id = Id::generate();
         $taskWasCreated = TaskWasCreated::with($id, $name, $priority);
-//        $task = new self($taskWasCreated);
         $task = self::fromEvents($taskWasCreated);
         $task->recordThat($taskWasCreated);
 
@@ -35,16 +35,15 @@ final class Task
         return $task;
     }
 
-//    private function __construct(TaskId $id, string $name, int $priority)
     private function __construct(TaskWasCreated $taskWasCreated)
     {
         $this->id = Id::fromString($taskWasCreated->taskId());
-//        $this->name = $taskWasCreated->name();
-//        $this->priority = $taskWasCreated->priority();
+        $this->name = $taskWasCreated->name();
+        $this->priority = $taskWasCreated->priority();
     }
 
     private $id, $name, $priority;
-    private $lastCompletedAt;
+    private $lastCompletedAt, $lastCompletedBy;
 
     public function complete(string $by) : void
     {
@@ -62,7 +61,13 @@ final class Task
         $this->apply($taskWasRenamed);
     }
 
-    public function updatePriority() : void {}
+    public function updatePriority(int $to) : void
+    {
+        $taskPriorityWasChanged = TaskPriorityWasChanged::with($this->id, $to);
+
+        $this->recordThat($taskPriorityWasChanged);
+        $this->apply($taskPriorityWasChanged);
+    }
 
     private function apply(Event $event) : void
     {
@@ -78,12 +83,18 @@ final class Task
         switch(get_class($event)) {
             case TaskWasCompleted::class:
                 /** @var TaskWasCompleted $event */
+                $this->lastCompletedBy = $event->by();
                 $this->lastCompletedAt = $event->timestamp();
                 break;
 
             case TaskWasRenamed::class:
                 /** @var TaskWasRenamed $event */
                 $this->name = $event->to();
+                break;
+
+            case TaskPriorityWasChanged::class:
+                /** @var TaskPriorityWasChanged $event */
+                $this->priority = $event->to();
                 break;
 
             default:
