@@ -3,6 +3,7 @@
         "psr-4": {"jjok\\TodoTwo\\": "src/"}
     },
     "require": {
+        "ext-json": "*",
         "ramsey/uuid": "^3.8"
     },
     "require-dev": {

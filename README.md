@@ -18,7 +18,7 @@ TODO
 * [X] Complete task
 * [X] Change task name
 * [X] Change task priority
-* [ ] Add Priority value object
+* [X] Add Priority value object
 * [ ] Serialise events
 * [ ] Store events
 * [ ] Projection of all events with priority
