@@ -6,8 +6,9 @@ use jjok\TodoTwo\Domain\Task\Events\TaskPriorityWasChanged;
 use jjok\TodoTwo\Domain\Task\Events\TaskWasCompleted;
 use jjok\TodoTwo\Domain\Task\Events\TaskWasCreated;
 use jjok\TodoTwo\Domain\Task\Events\TaskWasRenamed;
-use jjok\TodoTwo\Domain\Task\Id;
 use jjok\TodoTwo\Domain\Task\Event;
+use jjok\TodoTwo\Domain\Task\Id;
+use jjok\TodoTwo\Domain\Task\Priority;
 
 final class Task
 {
@@ -16,7 +17,7 @@ final class Task
     public static function create(string $name, int $priority) : self
     {
         $id = Id::generate();
-        $taskWasCreated = TaskWasCreated::with($id, $name, $priority);
+        $taskWasCreated = TaskWasCreated::with($id, $name, Priority::fromInt($priority));
         $task = self::fromEvents($taskWasCreated);
         $task->recordThat($taskWasCreated);
 
@@ -63,7 +64,7 @@ final class Task
 
     public function updatePriority(int $to) : void
     {
-        $taskPriorityWasChanged = TaskPriorityWasChanged::with($this->id, $to);
+        $taskPriorityWasChanged = TaskPriorityWasChanged::with($this->id, Priority::fromInt($to));
 
         $this->recordThat($taskPriorityWasChanged);
         $this->apply($taskPriorityWasChanged);

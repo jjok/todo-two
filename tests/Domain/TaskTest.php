@@ -8,6 +8,7 @@ use jjok\TodoTwo\Domain\Task\Events\TaskWasCreated;
 use jjok\TodoTwo\Domain\Task\Events\TaskWasRenamed;
 use jjok\TodoTwo\Domain\Task\Id;
 use jjok\TodoTwo\Domain\Task\Event;
+use jjok\TodoTwo\Domain\Task\Priority;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 
@@ -41,7 +42,7 @@ final class TaskTest extends TestCase
         return Task::fromEvents(TaskWasCreated::with(
             Id::fromString('4ef9c809-3e53-4341-a32f-cf3249df65cc'),
             'The name of the task',
-            50
+            Priority::fromInt(50)
         ));
     }
 
@@ -76,7 +77,7 @@ final class TaskTest extends TestCase
         $taskWasCreated = TaskWasCreated::with(
             Id::fromString('4ef9c809-3e53-4341-a32f-cf3249df65cc'),
             'The name of the task',
-            50
+            Priority::fromInt(50)
         );
         $unknownEvent = new class implements Event {
             public function taskId() : string
@@ -101,7 +102,7 @@ final class TaskTest extends TestCase
         $taskWasCreated = TaskWasCreated::with(
             Id::fromString('4ef9c809-3e53-4341-a32f-cf3249df65cc'),
             'The name of the task',
-            50
+            Priority::fromInt(50)
         );
         $taskWasCompleted = TaskWasCompleted::with(
             Id::fromString('4ef9c809-3e53-4341-a32f-cf3249df65cd'),
@@ -141,8 +142,8 @@ final class TaskTest extends TestCase
 
     /**
      * @test
-     * @testWith [ 10]
-     *           [ 30]
+     * @testWith [  1]
+     *           [ 29]
      *           [ 70]
      *           [100]
      */
@@ -167,6 +168,40 @@ final class TaskTest extends TestCase
         $this->assertTaskIdIsValid($taskPriorityWasChanged);
         $this->assertSame($newPriority, $taskPriorityWasChanged->to());
         $this->assertEventHappenedRecently($taskPriorityWasChanged);
+    }
+
+    /**
+     * @test
+     * @testWith [-99]
+     *           [ -1]
+     *           [  0]
+     *           [101]
+     *           [999]
+     */
+    public function a_task_can_only_be_created_with_a_valid_priority(int $priority) : void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Priority must be between 1 and 100');
+
+        Task::create('The name of the task', $priority);
+    }
+
+    /**
+     * @test
+     * @testWith [-99]
+     *           [ -1]
+     *           [  0]
+     *           [101]
+     *           [999]
+     */
+    public function priority_can_only_be_changed_to_something_valid(int $priority) : void
+    {
+        $task = $this->previouslyCreatedEvent();
+
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('Priority must be between 1 and 100');
+
+        $task->updatePriority($priority);
     }
 
     private function assertTaskIdIsValid(Event $event) : void

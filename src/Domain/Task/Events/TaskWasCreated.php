@@ -4,12 +4,13 @@ namespace jjok\TodoTwo\Domain\Task\Events;
 
 use jjok\TodoTwo\Domain\Task\Event;
 use jjok\TodoTwo\Domain\Task\Id;
+use jjok\TodoTwo\Domain\Task\Priority;
 
 final class TaskWasCreated implements Event
 {
-    public static function with(Id $id, string $name, int $priority) : self
+    public static function with(Id $id, string $name, Priority $priority) : self
     {
-        return new self($id->toString(), $name, $priority, time());
+        return new self($id->toString(), $name, $priority->toInt(), time());
     }
 
     public function __construct(string $id, string $name, int $priority, int $timestamp)
