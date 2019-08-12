@@ -88,6 +88,10 @@ final class TaskTest extends TestCase
             {
                 return 0;
             }
+            public function payload(): array
+            {
+                return [];
+            }
         };
 
         $this->expectException(\InvalidArgumentException::class);

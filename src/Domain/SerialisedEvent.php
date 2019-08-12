@@ -2,25 +2,23 @@
 
 namespace jjok\TodoTwo\Domain;
 
+use jjok\TodoTwo\Domain\Task\Events\TaskPriorityWasChanged;
+use jjok\TodoTwo\Domain\Task\Events\TaskWasCompleted;
 use jjok\TodoTwo\Domain\Task\Events\TaskWasCreated;
+use jjok\TodoTwo\Domain\Task\Events\TaskWasRenamed;
 
 final class SerialisedEvent
 {
     public static function fromJson(string $json) : self
     {
-        $json = json_decode($json, true);
+        $array = json_decode($json, true);
 
-        return new self($json['name'], $json['payload']);
+        return new self($array['name'], $array['payload']);
     }
 
     public static function fromEvent(Event $event) : self
     {
-        return new self(get_class($event), array(
-            'taskId' => $event->taskId(),
-            'name' => $event->name(),
-            'priority' => $event->priority(),
-            'timestamp' => $event->timestamp(),
-        ));
+        return new self(get_class($event), $event->payload());
     }
 
     public function __construct(string $eventName, array $payload)
@@ -41,14 +39,37 @@ final class SerialisedEvent
 
     public function toEvent() : Event
     {
-//        switch ($this->eventName) {
-//            case TaskWasCreated::class:
+        switch ($this->eventName) {
+            case TaskWasCreated::class:
                 return new TaskWasCreated(
                     $this->payload['taskId'],
                     $this->payload['name'],
                     $this->payload['priority'],
                     $this->payload['timestamp']
                 );
-//        }
+
+            case TaskWasCompleted::class:
+                return new TaskWasCompleted(
+                    $this->payload['taskId'],
+                    $this->payload['by'],
+                    $this->payload['timestamp']
+                );
+
+            case TaskWasRenamed::class:
+                return new TaskWasRenamed(
+                    $this->payload['taskId'],
+                    $this->payload['to'],
+                    $this->payload['timestamp']
+                );
+
+            case TaskPriorityWasChanged::class:
+                return new TaskPriorityWasChanged(
+                    $this->payload['taskId'],
+                    $this->payload['to'],
+                    $this->payload['timestamp']
+                );
+        }
+
+        throw new \InvalidArgumentException(sprintf('%s can not be unserialised', $this->eventName));
     }
 }

@@ -35,4 +35,13 @@ final class TaskWasCompleted implements Event
     {
         return $this->timestamp;
     }
+
+    public function payload(): array
+    {
+        return array(
+            'taskId' => $this->taskId(),
+            'by' => $this->by(),
+            'timestamp' => $this->timestamp(),
+        );
+    }
 }

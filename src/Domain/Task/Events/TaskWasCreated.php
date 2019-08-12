@@ -42,4 +42,14 @@ final class TaskWasCreated implements Event
     {
         return $this->timestamp;
     }
+
+    public function payload(): array
+    {
+        return array(
+            'taskId' => $this->taskId(),
+            'name' => $this->name(),
+            'priority' => $this->priority(),
+            'timestamp' => $this->timestamp(),
+        );
+    }
 }
