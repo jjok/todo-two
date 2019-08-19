@@ -19,9 +19,9 @@ TODO
 * [X] Change task name
 * [X] Change task priority
 * [X] Add Priority value object
-* [ ] Serialise events
-* [ ] Store events
-* [ ] Projection of all events with priority
+* [X] Serialise events
+* [X] Store events
+* [ ] Projection of all tasks with priority
 * [ ] HTTP frontend
 * [ ] Set up web server
 * [ ] Client
