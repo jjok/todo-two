@@ -72,14 +72,7 @@ final class Task
 
     private function apply(Event $event) : void
     {
-        if($event->taskId() !== $this->id->toString()) {
-            throw new \InvalidArgumentException(sprintf(
-                'Event %s for task %s can not be applied to task %s.',
-                get_class($event),
-                $event->taskId(),
-                $this->id->toString()
-            ));
-        }
+        $this->assertEventIsForThisTask($event);
 
         switch(get_class($event)) {
             case TaskWasCompleted::class:
@@ -102,6 +95,18 @@ final class Task
                 throw new \InvalidArgumentException(
                     sprintf('Unexpected event. %s can not be applied to %s', get_class($event), __CLASS__)
                 );
+        }
+    }
+
+    private function assertEventIsForThisTask(Event $event) : void
+    {
+        if($event->taskId() !== $this->id->toString()) {
+            throw new \InvalidArgumentException(sprintf(
+                'Event %s for task %s can not be applied to task %s.',
+                get_class($event),
+                $event->taskId(),
+                $this->id->toString()
+            ));
         }
     }
 }
