@@ -7,13 +7,13 @@ use Ramsey\Uuid\UuidInterface;
 
 final class Id
 {
-    /**
-     * @throws \Exception
-     */
-    public static function generate() : self
-    {
-        return new self(Uuid::uuid4());
-    }
+//    /**
+//     * @throws \Exception
+//     */
+//    public static function generate() : self
+//    {
+//        return new self(Uuid::uuid4());
+//    }
 
     public static function fromString(string $uuid) : self
     {

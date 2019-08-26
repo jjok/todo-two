@@ -17,12 +17,12 @@ final class TaskTest extends TestCase
     /** @test */
     public function a_new_task_can_be_created() : void
     {
-        $task = Task::create('The name of the task', 50);
+        $task = Task::create('4ef9c809-3e53-4341-a32f-cf3249df65cc', 'The name of the task', 50);
 
-        $this->assertTaskWasCreated('The name of the task', 50, $task);
+        $this->assertTaskWasCreated('4ef9c809-3e53-4341-a32f-cf3249df65cc', 'The name of the task', 50, $task);
     }
 
-    private function assertTaskWasCreated(string $name, int $priority, Task $task) : void
+    private function assertTaskWasCreated(string $id, string $name, int $priority, Task $task) : void
     {
         $events = $task->releaseEvents();
 
@@ -32,6 +32,7 @@ final class TaskTest extends TestCase
         $this->assertInstanceOf(TaskWasCreated::class, $taskWasCreated);
 
         $this->assertTaskIdIsValid($taskWasCreated);
+        $this->assertSame($id, $taskWasCreated->taskId());
         $this->assertSame($name, $taskWasCreated->name());
         $this->assertSame($priority, $taskWasCreated->priority());
         $this->assertEventHappenedRecently($taskWasCreated);
@@ -187,7 +188,7 @@ final class TaskTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Priority must be between 1 and 100');
 
-        Task::create('The name of the task', $priority);
+        Task::create('4ef9c809-3e53-4341-a32f-cf3249df65cc', 'The name of the task', $priority);
     }
 
     /**

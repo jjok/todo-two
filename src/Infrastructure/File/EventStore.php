@@ -10,7 +10,6 @@ final class EventStore implements \jjok\TodoTwo\Domain\EventStore
     public function __construct(\SplFileObject $file)
     {
         $file->setFlags(\SplFileObject::DROP_NEW_LINE);
-//        $this->file = new \SplFileObject($fileName);
         $this->file = $file;
     }
 

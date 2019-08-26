@@ -18,7 +18,7 @@ final class CreateTask
     {
         //TODO check task doesn't already exist? By Name?
 
-        $task = Task::create2($id, $name, $priority);
+        $task = Task::create($id, $name, $priority);
 
         $this->eventStore->push(...$task->releaseEvents());
     }

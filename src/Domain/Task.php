@@ -14,10 +14,19 @@ final class Task
 {
     use EmitsEvents;
 
-    public static function create(string $name, int $priority) : self
+//    public static function create(string $name, int $priority) : self
+//    {
+//        $id = Id::generate();
+//        $taskWasCreated = TaskWasCreated::with($id, $name, Priority::fromInt($priority));
+//        $task = self::fromEvents($taskWasCreated);
+//        $task->recordThat($taskWasCreated);
+//
+//        return $task;
+//    }
+
+    public static function create(string $id, string $name, int $priority) : self
     {
-        $id = Id::generate();
-        $taskWasCreated = TaskWasCreated::with($id, $name, Priority::fromInt($priority));
+        $taskWasCreated = TaskWasCreated::with(Id::fromString($id), $name, Priority::fromInt($priority));
         $task = self::fromEvents($taskWasCreated);
         $task->recordThat($taskWasCreated);
 
