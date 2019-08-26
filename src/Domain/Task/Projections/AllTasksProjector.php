@@ -9,7 +9,7 @@ use jjok\TodoTwo\Domain\Task\Events\TaskWasCompleted;
 use jjok\TodoTwo\Domain\Task\Events\TaskWasCreated;
 use jjok\TodoTwo\Domain\Task\Events\TaskWasRenamed;
 
-final class AllTasks
+final class AllTasksProjector
 {
     public function __construct(EventStream $eventStream)
     {

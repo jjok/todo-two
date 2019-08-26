@@ -1,25 +1,24 @@
 <?php
 
-namespace jjok\TodoTwo\Domain;
+namespace jjok\TodoTwo\Domain\Task\Projections;
 
+use jjok\TodoTwo\Domain\Event;
 use jjok\TodoTwo\Domain\Task\Events\TaskPriorityWasChanged;
 use jjok\TodoTwo\Domain\Task\Events\TaskWasCompleted;
 use jjok\TodoTwo\Domain\Task\Events\TaskWasCreated;
 use jjok\TodoTwo\Domain\Task\Events\TaskWasRenamed;
 use jjok\TodoTwo\Domain\Task\Id;
 use jjok\TodoTwo\Domain\Task\Priority;
-use jjok\TodoTwo\Domain\Task\Projections\AllTasks;
-use jjok\TodoTwo\Domain\Task\Projections\InvalidEventStream;
 use jjok\TodoTwo\Infrastructure\File\EventStore;
 use jjok\TodoTwo\Infrastructure\File\EventStream;
 use PHPUnit\Framework\TestCase;
 
-final class AllTasksProjectionTest extends TestCase
+final class AllTasksProjectorTest extends TestCase
 {
     /** @test */
     public function projection_is_initially_empty() : void
     {
-        $projection = new AllTasks(new EventStream(new \SplTempFileObject()));
+        $projection = new AllTasksProjector(new EventStream(new \SplTempFileObject()));
 
         $this->assertEquals([], $projection->toArray());
     }
@@ -198,10 +197,11 @@ final class AllTasksProjectionTest extends TestCase
         $eventStore = new EventStore($file);
         $eventStore->push(...$events);
 
-        $projection = new AllTasks(new EventStream($file));
+        $projection = new AllTasksProjector(new EventStream($file));
         $projection->rebuild();
+        $actualProjection = $projection->toArray();
 
-        $this->assertEquals($expectedProjection, $projection->toArray());
+        $this->assertEquals($expectedProjection, $actualProjection);
     }
 
     /** @test */
@@ -223,7 +223,7 @@ final class AllTasksProjectionTest extends TestCase
 
         $eventStream = new EventStream($file);
 
-        $projection = new AllTasks($eventStream);
+        $projection = new AllTasksProjector($eventStream);
 
         $this->expectException(InvalidEventStream::class);
         $this->expectExceptionMessage(
@@ -264,7 +264,7 @@ final class AllTasksProjectionTest extends TestCase
 
         $eventStream = new EventStream($file);
 
-        $projection = new AllTasks($eventStream);
+        $projection = new AllTasksProjector($eventStream);
 
         $this->expectException(InvalidEventStream::class);
         $this->expectExceptionMessage(

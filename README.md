@@ -11,6 +11,8 @@ Test
 
     docker run --rm -it -v $HOME/Workspace/todoTwo:/tmp todotwo vendor/bin/phpunit
 
+    docker run --rm -it -v $HOME/Workspace/todoTwo:/tmp todotwo php composer.phar install
+
 TODO
 ----
 
@@ -21,7 +23,11 @@ TODO
 * [X] Add Priority value object
 * [X] Serialise events
 * [X] Store events
-* [ ] Projection of all tasks with priority
+* [X] Rebuild Task aggregate from event stream
+* [X] Projection of all tasks with priority
+* [ ] Save projection to file
+* [ ] Rebuild projections when event is stored
+* [ ] Require task name to be unique
 * [ ] HTTP frontend
 * [ ] Set up web server
 * [ ] Client
