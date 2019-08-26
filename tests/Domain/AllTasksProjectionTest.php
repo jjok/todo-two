@@ -20,6 +20,7 @@ final class AllTasksProjectionTest extends TestCase
     public function projection_is_initially_empty() : void
     {
         $projection = new AllTasks();
+
         $this->assertEquals([], $projection->toArray());
     }
 
@@ -195,9 +196,7 @@ final class AllTasksProjectionTest extends TestCase
     {
         $file = new \SplTempFileObject();
         $eventStore = new EventStore($file);
-        foreach($events as $event) {
-            $eventStore->push($event);
-        }
+        $eventStore->push(...$events);
 
         $projection = new AllTasks();
         $projection->build(new EventStream($file));

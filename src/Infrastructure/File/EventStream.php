@@ -21,7 +21,8 @@ final class EventStream implements \jjok\TodoTwo\Domain\EventStream
 
     private $file;
 
-    public function all() : \Traversable {
+    public function all() : \Traversable
+    {
         foreach ($this->file as $line) {
             $serialisedEvent = SerialisedEvent::fromJson($line);
 

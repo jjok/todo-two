@@ -16,10 +16,12 @@ final class EventStore implements \jjok\TodoTwo\Domain\EventStore
 
     private $file;
 
-    public function push(Event $event): void
+    public function push(Event ...$events): void
     {
-        $serialisedEvent = SerialisedEvent::fromEvent($event);
+        foreach($events as $event) {
+            $serialisedEvent = SerialisedEvent::fromEvent($event);
 
-        $this->file->fwrite($serialisedEvent->toJson() . PHP_EOL);
+            $this->file->fwrite($serialisedEvent->toJson() . PHP_EOL);
+        }
     }
 }
