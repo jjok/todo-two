@@ -1,25 +1,29 @@
 <?php
 
 namespace jjok\TodoTwo\Infrastructure\File;
-use jjok\TodoTwo\Domain\Event;
+
 use jjok\TodoTwo\Domain\SerialisedEvent;
+use jjok\TodoTwo\Domain\Task\Event as TaskEvent;
+use jjok\TodoTwo\Domain\Task\Id as TaskId;
+use SplFileObject;
 
 final class EventStream implements \jjok\TodoTwo\Domain\EventStream
 {
-    public function __construct(\SplFileObject $file)
+    public function __construct(SplFileObject $file)
     {
-        $file->setFlags(\SplFileObject::DROP_NEW_LINE);
+        $file->setFlags(
+            SplFileObject::DROP_NEW_LINE |
+            SplFileObject::READ_AHEAD |
+            SplFileObject::SKIP_EMPTY
+        );
         $this->file = $file;
     }
 
     private $file;
 
-    /**
-     * @return Event[]|\Generator
-     */
-    public function all() {
-        for($this->file->rewind(); !$this->file->eof(); $this->file->next()) {
-            $serialisedEvent = SerialisedEvent::fromJson($this->file->current());
+    public function all() : \Traversable {
+        foreach ($this->file as $line) {
+            $serialisedEvent = SerialisedEvent::fromJson($line);
 
             yield $serialisedEvent->toEvent();
         }

@@ -7,7 +7,7 @@ interface EventStream
     /**
      * @return Event[]|\Generator
      */
-    public function all();
+    public function all() : \Traversable;
 
 //    /**
 //     * @return Event[]|\Generator
