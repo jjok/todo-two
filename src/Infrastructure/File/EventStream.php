@@ -29,4 +29,16 @@ final class EventStream implements \jjok\TodoTwo\Domain\EventStream
             yield $serialisedEvent->toEvent();
         }
     }
+
+    public function filterByTaskId(TaskId $id) : \Traversable
+    {
+        foreach ($this->file as $line) {
+            $serialisedEvent = SerialisedEvent::fromJson($line);
+            $event = $serialisedEvent->toEvent();
+
+            if($event instanceof TaskEvent && $event->taskId() === $id->toString()) {
+                yield $event;
+            }
+        }
+    }
 }

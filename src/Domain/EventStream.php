@@ -2,6 +2,8 @@
 
 namespace jjok\TodoTwo\Domain;
 
+use jjok\TodoTwo\Domain\Task\Id as TaskId;
+
 interface EventStream
 {
     /**
@@ -9,8 +11,8 @@ interface EventStream
      */
     public function all() : \Traversable;
 
-//    /**
-//     * @return Event[]|\Generator
-//     */
-//    public function filterByTaskId();
+    /**
+     * @return Event[]|\Generator
+     */
+    public function filterByTaskId(TaskId $id) : \Traversable;
 }
