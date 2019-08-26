@@ -2,12 +2,12 @@
 
 namespace jjok\TodoTwo\Domain\Task\Projections;
 
+use jjok\TodoTwo\Domain\EventStream;
 use jjok\TodoTwo\Domain\Task\Event as TaskEvent;
 use jjok\TodoTwo\Domain\Task\Events\TaskPriorityWasChanged;
 use jjok\TodoTwo\Domain\Task\Events\TaskWasCompleted;
 use jjok\TodoTwo\Domain\Task\Events\TaskWasCreated;
 use jjok\TodoTwo\Domain\Task\Events\TaskWasRenamed;
-use jjok\TodoTwo\Infrastructure\File\EventStream;
 
 final class AllTasks
 {
