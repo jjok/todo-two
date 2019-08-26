@@ -22,10 +22,8 @@ final class AllTasksProjector
     /** @throws InvalidEventStream */
     public function rebuild() : void
     {
+        $this->tasks = [];
         foreach ($this->eventStream->all() as $event) {
-            /** @var TaskEvent $event */
-            $taskId = $event->taskId();
-
             switch (get_class($event)) {
                 case TaskWasCreated::class:
                     $this->applyTaskWasCreated($event);
