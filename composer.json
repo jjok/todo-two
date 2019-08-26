@@ -2,6 +2,9 @@
     "autoload": {
         "psr-4": {"jjok\\TodoTwo\\": "src/"}
     },
+    "autoload-dev": {
+        "psr-4": {"jjok\\TodoTwo\\": "tests/"}
+    },
     "require": {
         "ext-json": "*",
         "ramsey/uuid": "^3.8"
