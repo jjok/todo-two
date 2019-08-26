@@ -30,9 +30,9 @@ abstract class CommandTest extends TestCase
 
     protected function getStoredTask(string $id) : array
     {
-        $projection = new AllTasks();
+        $projection = new AllTasks($this->eventStream);
 
-        $projection->build($this->eventStream);
+        $projection->rebuild();
 
         $allTasks = $projection->toArray();
 

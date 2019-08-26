@@ -19,7 +19,7 @@ final class AllTasksProjectionTest extends TestCase
     /** @test */
     public function projection_is_initially_empty() : void
     {
-        $projection = new AllTasks();
+        $projection = new AllTasks(new EventStream(new \SplTempFileObject()));
 
         $this->assertEquals([], $projection->toArray());
     }
@@ -198,8 +198,8 @@ final class AllTasksProjectionTest extends TestCase
         $eventStore = new EventStore($file);
         $eventStore->push(...$events);
 
-        $projection = new AllTasks();
-        $projection->build(new EventStream($file));
+        $projection = new AllTasks(new EventStream($file));
+        $projection->rebuild();
 
         $this->assertEquals($expectedProjection, $projection->toArray());
     }
@@ -223,14 +223,14 @@ final class AllTasksProjectionTest extends TestCase
 
         $eventStream = new EventStream($file);
 
-        $projection = new AllTasks();
+        $projection = new AllTasks($eventStream);
 
         $this->expectException(InvalidEventStream::class);
         $this->expectExceptionMessage(
             'Can not created task "The name of the task" with ID "4ef9c809-3e53-4341-a32f-cf3249df65cc" as it already exists'
         );
 
-        $projection->build($eventStream);
+        $projection->rebuild();
     }
 
     public function invalidEventProvider() : array
@@ -264,13 +264,13 @@ final class AllTasksProjectionTest extends TestCase
 
         $eventStream = new EventStream($file);
 
-        $projection = new AllTasks();
+        $projection = new AllTasks($eventStream);
 
         $this->expectException(InvalidEventStream::class);
         $this->expectExceptionMessage(
             'can not be applied as task with ID "4ef9c809-3e53-4341-a32f-cf3249df65cc" does not exist'
         );
 
-        $projection->build($eventStream);
+        $projection->rebuild();
     }
 }

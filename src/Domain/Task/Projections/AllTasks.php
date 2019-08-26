@@ -11,14 +11,21 @@ use jjok\TodoTwo\Infrastructure\File\EventStream;
 
 final class AllTasks
 {
+    public function __construct(EventStream $eventStream)
+    {
+        $this->eventStream = $eventStream;
+    }
+
+    private $eventStream;
     private $tasks = [];
 
     /**
      * @throws InvalidEventStream
      */
-    public function build(EventStream $eventStream) : void
+    public function rebuild() : void
     {
-        foreach ($eventStream->all() as $event) {
+        foreach ($this->eventStream->all() as $event) {
+            /** @var TaskEvent $event */
             $taskId = $event->taskId();
 
             switch (get_class($event)) {
