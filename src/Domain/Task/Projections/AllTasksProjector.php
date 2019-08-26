@@ -19,9 +19,7 @@ final class AllTasksProjector
     private $eventStream;
     private $tasks = [];
 
-    /**
-     * @throws InvalidEventStream
-     */
+    /** @throws InvalidEventStream */
     public function rebuild() : void
     {
         foreach ($this->eventStream->all() as $event) {
@@ -30,41 +28,38 @@ final class AllTasksProjector
 
             switch (get_class($event)) {
                 case TaskWasCreated::class:
-                    /** @var TaskWasCreated $event */
-                    $this->assertTaskDoesNotAlreadyExist($event);
-
-                    $this->tasks[$taskId] = array(
-                        'id' => $taskId,
-                        'name' => $event->name(),
-                        'priority' => $event->priority(),
-                        'lastCompletedAt' => null,
-                        'lastCompletedBy' => null,
-                    );
+                    $this->applyTaskWasCreated($event);
                     break;
 
                 case TaskWasCompleted::class:
-                    /** @var TaskWasCompleted $event */
-                    $this->assertTaskAlreadyExists($event);
-
-                    $this->tasks[$taskId]['lastCompletedAt'] = $event->timestamp();
-                    $this->tasks[$taskId]['lastCompletedBy'] = $event->by();
+                    $this->applyTaskWasCompleted($event);
                     break;
 
                 case TaskWasRenamed::class:
-                    /** @var TaskWasRenamed $event */
-                    $this->assertTaskAlreadyExists($event);
-
-                    $this->tasks[$taskId]['name'] = $event->to();
+                    $this->applyTaskWasRenamed($event);
                     break;
 
                 case TaskPriorityWasChanged::class:
-                    /** @var TaskPriorityWasChanged $event */
-                    $this->assertTaskAlreadyExists($event);
-
-                    $this->tasks[$taskId]['priority'] = $event->to();
+                    $this->applyTaskPriorityWasChanged($event);
                     break;
             }
         }
+    }
+
+    /** @throws InvalidEventStream */
+    private function applyTaskWasCreated(TaskWasCreated $event) : void
+    {
+        $this->assertTaskDoesNotAlreadyExist($event);
+
+        $taskId = $event->taskId();
+
+        $this->tasks[$taskId] = array(
+            'id' => $taskId,
+            'name' => $event->name(),
+            'priority' => $event->priority(),
+            'lastCompletedAt' => null,
+            'lastCompletedBy' => null,
+        );
     }
 
     /** @throws InvalidEventStream */
@@ -73,6 +68,37 @@ final class AllTasksProjector
         if(isset($this->tasks[$event->taskId()])) {
             throw InvalidEventStream::taskAlreadyExists($event);
         }
+    }
+
+    /** @throws InvalidEventStream */
+    public function applyTaskWasCompleted(TaskWasCompleted $event) : void
+    {
+        $this->assertTaskAlreadyExists($event);
+
+        $taskId = $event->taskId();
+
+        $this->tasks[$taskId]['lastCompletedAt'] = $event->timestamp();
+        $this->tasks[$taskId]['lastCompletedBy'] = $event->by();
+    }
+
+    /** @throws InvalidEventStream */
+    private function applyTaskWasRenamed(TaskWasRenamed $event) : void
+    {
+        $this->assertTaskAlreadyExists($event);
+
+        $taskId = $event->taskId();
+
+        $this->tasks[$taskId]['name'] = $event->to();
+    }
+
+    /** @throws InvalidEventStream */
+    private function applyTaskPriorityWasChanged(TaskPriorityWasChanged $event) : void
+    {
+        $this->assertTaskAlreadyExists($event);
+
+        $taskId = $event->taskId();
+
+        $this->tasks[$taskId]['priority'] = $event->to();
     }
 
     /** @throws InvalidEventStream */
