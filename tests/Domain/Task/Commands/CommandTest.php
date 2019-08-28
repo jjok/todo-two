@@ -3,6 +3,7 @@
 namespace jjok\TodoTwo\Domain\Task\Commands;
 
 use jjok\TodoTwo\Domain\Task\Projections\AllTasksProjector;
+use jjok\TodoTwo\Infrastructure\File\AllTasksStorage;
 use jjok\TodoTwo\Infrastructure\File\EventStore;
 use jjok\TodoTwo\Infrastructure\File\EventStream;
 use PHPUnit\Framework\TestCase;
@@ -30,7 +31,7 @@ abstract class CommandTest extends TestCase
 
     protected function getStoredTask(string $id) : array
     {
-        $projection = new AllTasksProjector($this->eventStream);
+        $projection = new AllTasksProjector($this->eventStream, AllTasksStorage::temp());
 
         $projection->rebuild();
 

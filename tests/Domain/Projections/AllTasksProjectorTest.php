@@ -9,6 +9,7 @@ use jjok\TodoTwo\Domain\Task\Events\TaskWasCreated;
 use jjok\TodoTwo\Domain\Task\Events\TaskWasRenamed;
 use jjok\TodoTwo\Domain\Task\Id;
 use jjok\TodoTwo\Domain\Task\Priority;
+use jjok\TodoTwo\Infrastructure\File\AllTasksStorage;
 use jjok\TodoTwo\Infrastructure\File\EventStore;
 use jjok\TodoTwo\Infrastructure\File\EventStream;
 use PHPUnit\Framework\TestCase;
@@ -18,7 +19,7 @@ final class AllTasksProjectorTest extends TestCase
     /** @test */
     public function projection_is_initially_empty() : void
     {
-        $projection = new AllTasksProjector(new EventStream(new \SplTempFileObject()));
+        $projection = new AllTasksProjector(new EventStream(new \SplTempFileObject()), AllTasksStorage::temp());
 
         $this->assertEquals([], $projection->toArray());
     }
@@ -197,7 +198,7 @@ final class AllTasksProjectorTest extends TestCase
         $eventStore = new EventStore($file);
         $eventStore->push(...$events);
 
-        $projection = new AllTasksProjector(new EventStream($file));
+        $projection = new AllTasksProjector(new EventStream($file), AllTasksStorage::temp());
         $projection->rebuild();
         $actualProjection = $projection->toArray();
 
@@ -223,7 +224,7 @@ final class AllTasksProjectorTest extends TestCase
 
         $eventStream = new EventStream($file);
 
-        $projection = new AllTasksProjector($eventStream);
+        $projection = new AllTasksProjector($eventStream, AllTasksStorage::temp());
 
         $this->expectException(InvalidEventStream::class);
         $this->expectExceptionMessage(
@@ -264,7 +265,7 @@ final class AllTasksProjectorTest extends TestCase
 
         $eventStream = new EventStream($file);
 
-        $projection = new AllTasksProjector($eventStream);
+        $projection = new AllTasksProjector($eventStream, AllTasksStorage::temp());
 
         $this->expectException(InvalidEventStream::class);
         $this->expectExceptionMessage(

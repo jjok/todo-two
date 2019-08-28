@@ -11,18 +11,20 @@ use jjok\TodoTwo\Domain\Task\Events\TaskWasRenamed;
 
 final class AllTasksProjector
 {
-    public function __construct(EventStream $eventStream)
+    public function __construct(EventStream $eventStream, AllTasksStorage $storage)
     {
         $this->eventStream = $eventStream;
+        $this->storage = $storage;
     }
 
-    private $eventStream;
+    private $eventStream, $storage;
     private $tasks = [];
 
     /** @throws InvalidEventStream */
     public function rebuild() : void
     {
         $this->tasks = [];
+
         foreach ($this->eventStream->all() as $event) {
             switch (get_class($event)) {
                 case TaskWasCreated::class:
@@ -42,6 +44,8 @@ final class AllTasksProjector
                     break;
             }
         }
+
+        $this->storage->save(array_values($this->tasks));
     }
 
     /** @throws InvalidEventStream */
@@ -107,6 +111,9 @@ final class AllTasksProjector
         }
     }
 
+    /**
+     * @deprecated Load projection from storage
+     */
     public function toArray() : array
     {
         return array_values($this->tasks);
