@@ -28,6 +28,6 @@ final class AllTasksStorage implements AllTasksStorageInterface
     {
         $this->file->rewind();
 
-        return json_decode($this->file->current(), true);
+        return json_decode($this->file->current(), true) ?? [];
     }
 }
