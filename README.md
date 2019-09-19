@@ -25,10 +25,11 @@ TODO
 * [X] Store events
 * [X] Rebuild Task aggregate from event stream
 * [X] Projection of all tasks with priority
-* [ ] Save projection to file
-* [ ] Rebuild projections when event is stored
+* [?] Save projection to file
+* [?] Rebuild projections when event is stored
 * [ ] Require task name to be unique
 * [ ] HTTP frontend
 * [ ] Set up web server
 * [ ] Client
 * [ ] Migrate data from old app
+* [ ] Archive tasks

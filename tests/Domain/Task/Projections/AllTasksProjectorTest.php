@@ -9,17 +9,19 @@ use jjok\TodoTwo\Domain\Task\Events\TaskWasCreated;
 use jjok\TodoTwo\Domain\Task\Events\TaskWasRenamed;
 use jjok\TodoTwo\Domain\Task\Id;
 use jjok\TodoTwo\Domain\Task\Priority;
-use jjok\TodoTwo\Infrastructure\File\AllTasksStorage;
 use jjok\TodoTwo\Infrastructure\File\EventStore;
 use jjok\TodoTwo\Infrastructure\File\EventStream;
+use jjok\TodoTwo\Infrastructure\File\TempAllTasksStorage;
 use PHPUnit\Framework\TestCase;
 
 final class AllTasksProjectorTest extends TestCase
 {
+    private const PROJECTION_FILE = './all-tasks.json';
+
     /** @test */
     public function projection_is_initially_empty() : void
     {
-        $projection = new AllTasksProjector(new EventStream(new \SplTempFileObject()), AllTasksStorage::temp());
+        $projection = new AllTasksProjector(new TempAllTasksStorage(self::PROJECTION_FILE));
 
         $this->assertEquals([], $projection->toArray());
     }
@@ -198,8 +200,11 @@ final class AllTasksProjectorTest extends TestCase
         $eventStore = new EventStore($file);
         $eventStore->push(...$events);
 
-        $projection = new AllTasksProjector(new EventStream($file), AllTasksStorage::temp());
-        $projection->rebuild();
+        $eventStream = new EventStream($file);
+
+        $projection = new AllTasksProjector(new TempAllTasksStorage(self::PROJECTION_FILE));
+        $projection->rebuild($eventStream->all());
+
         $actualProjection = $projection->toArray();
 
         $this->assertEquals($expectedProjection, $actualProjection);
@@ -224,14 +229,14 @@ final class AllTasksProjectorTest extends TestCase
 
         $eventStream = new EventStream($file);
 
-        $projection = new AllTasksProjector($eventStream, AllTasksStorage::temp());
+        $projection = new AllTasksProjector(new TempAllTasksStorage(self::PROJECTION_FILE));
 
         $this->expectException(InvalidEventStream::class);
         $this->expectExceptionMessage(
             'Can not created task "The name of the task" with ID "4ef9c809-3e53-4341-a32f-cf3249df65cc" as it already exists'
         );
 
-        $projection->rebuild();
+        $projection->rebuild($eventStream->all());
     }
 
     public function invalidEventProvider() : array
@@ -265,13 +270,13 @@ final class AllTasksProjectorTest extends TestCase
 
         $eventStream = new EventStream($file);
 
-        $projection = new AllTasksProjector($eventStream, AllTasksStorage::temp());
+        $projection = new AllTasksProjector(new TempAllTasksStorage(self::PROJECTION_FILE));
 
         $this->expectException(InvalidEventStream::class);
         $this->expectExceptionMessage(
             'can not be applied as task with ID "4ef9c809-3e53-4341-a32f-cf3249df65cc" does not exist'
         );
 
-        $projection->rebuild();
+        $projection->rebuild($eventStream->all());
     }
 }

@@ -13,11 +13,11 @@ final class ChangeTaskPriorityTest extends CommandTest
      *           ["4ef9c809-3e53-4341-a32f-cf3249df65dd", 90, 55]
      *           ["4ef9c809-3e53-4341-a32f-cf3249df65ee",  1, 99]
      */
-    public function a_task_can_be_renamed(string $id, int $originalPriority, int $newPriority) : void
+    public function a_task_can_have_its_priority_changed(string $id, int $originalPriority, int $newPriority) : void
     {
         $this->givenTaskAlreadyExists($id, 'Task name', $originalPriority);
 
-        $changeTaskPriority = new ChangeTaskPriority($this->eventStore, new GetById($this->eventStream));
+        $changeTaskPriority = new ChangeTaskPriority($this->eventStore2, new GetById($this->eventStore2));
         $changeTaskPriority->execute($id, $newPriority);
 
         $this->assertTaskPriorityWasChanged($id, $newPriority);
@@ -38,7 +38,7 @@ final class ChangeTaskPriorityTest extends CommandTest
      */
     public function a_task_priority_cannot_be_changed_if_the_task_does_not_exist(string $id, int $newPriority) : void
     {
-        $changeTaskPriority = new ChangeTaskPriority($this->eventStore, new GetById($this->eventStream));
+        $changeTaskPriority = new ChangeTaskPriority($this->eventStore2, new GetById($this->eventStore2));
 
         $this->expectException(TaskNotFound::class);
 

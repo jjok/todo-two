@@ -17,7 +17,7 @@ final class RenameTaskTest extends CommandTest
     {
         $this->givenTaskAlreadyExists($id, $originalName, 50);
 
-        $renameTask = new RenameTask($this->eventStore, new GetById($this->eventStream));
+        $renameTask = new RenameTask($this->eventStore2, new GetById($this->eventStore2));
         $renameTask->execute($id, $newName);
 
         $this->assertTaskWasRenamed($id, $newName);
@@ -38,7 +38,7 @@ final class RenameTaskTest extends CommandTest
      */
     public function a_task_cannot_be_renamed_if_it_does_not_exist(string $id, string $newName) : void
     {
-        $renameTask = new RenameTask($this->eventStore, new GetById($this->eventStream));
+        $renameTask = new RenameTask($this->eventStore2, new GetById($this->eventStore2));
 
         $this->expectException(TaskNotFound::class);
 
