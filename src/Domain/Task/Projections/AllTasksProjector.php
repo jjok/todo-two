@@ -2,7 +2,6 @@
 
 namespace jjok\TodoTwo\Domain\Task\Projections;
 
-use jjok\TodoTwo\Domain\EventStream;
 use jjok\TodoTwo\Domain\Task\Event as TaskEvent;
 use jjok\TodoTwo\Domain\Task\Events\TaskPriorityWasChanged;
 use jjok\TodoTwo\Domain\Task\Events\TaskWasCompleted;
@@ -11,21 +10,21 @@ use jjok\TodoTwo\Domain\Task\Events\TaskWasRenamed;
 
 final class AllTasksProjector
 {
-    public function __construct(EventStream $eventStream, AllTasksStorage $storage)
+    public function __construct(AllTasksStorage $storage)
     {
-        $this->eventStream = $eventStream;
         $this->storage = $storage;
     }
 
-    private $eventStream, $storage;
+    private $storage;
     private $tasks = [];
 
     /** @throws InvalidEventStream */
-    public function rebuild() : void
+    public function rebuild($events) : void
     {
+//        $this->tasks = $this->storage->load();
         $this->tasks = [];
 
-        foreach ($this->eventStream->all() as $event) {
+        foreach ($events as $event) {
             switch (get_class($event)) {
                 case TaskWasCreated::class:
                     $this->applyTaskWasCreated($event);
@@ -45,7 +44,7 @@ final class AllTasksProjector
             }
         }
 
-        $this->storage->save(array_values($this->tasks));
+        $this->storage->save($this->tasks);
     }
 
     /** @throws InvalidEventStream */

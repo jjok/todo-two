@@ -6,28 +6,22 @@ use jjok\TodoTwo\Domain\Task\Projections\AllTasksStorage as AllTasksStorageInter
 
 final class AllTasksStorage implements AllTasksStorageInterface
 {
-    public static function temp() : self
+    public function __construct(string $filename)
     {
-        return new self(new \SplTempFileObject());
+        $this->filename = $filename;
     }
 
-    public function __construct(\SplFileObject $file)
-    {
-        $this->file = $file;
-    }
-
-    private $file;
+    private $filename;
 
     public function save(array $allTasks): void
     {
-        $this->file->rewind();
-        $this->file->fwrite(json_encode($allTasks));
+        if(file_put_contents($this->filename, json_encode($allTasks, JSON_PRETTY_PRINT)) === false) {
+            throw new \Exception(sprintf('Failed to save projection to "%s".', $this->filename));
+        }
     }
 
     public function load(): array
     {
-        $this->file->rewind();
-
-        return json_decode($this->file->current(), true) ?? [];
+        return json_decode(file_get_contents($this->filename), true) ?? [];
     }
 }
