@@ -124,7 +124,7 @@ final class InvalidEventStream extends \Exception
     public static function taskAlreadyExists(TaskWasCreated $event) : self
     {
         return new self(sprintf(
-            'Can not created task "%s" with ID "%s" as it already exists.',
+            'Can not create task "%s" with ID "%s" as it already exists.',
             $event->name(),
             $event->taskId()
         ));

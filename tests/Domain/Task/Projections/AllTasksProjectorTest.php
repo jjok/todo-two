@@ -233,7 +233,7 @@ final class AllTasksProjectorTest extends TestCase
 
         $this->expectException(InvalidEventStream::class);
         $this->expectExceptionMessage(
-            'Can not created task "The name of the task" with ID "4ef9c809-3e53-4341-a32f-cf3249df65cc" as it already exists'
+            'Can not create task "The name of the task" with ID "4ef9c809-3e53-4341-a32f-cf3249df65cc" as it already exists'
         );
 
         $projection->rebuild($eventStream->all());
