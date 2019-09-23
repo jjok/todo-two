@@ -19,10 +19,9 @@ final class AllTasksProjector
     private $tasks = [];
 
     /** @throws InvalidEventStream */
-    public function rebuild($events) : void
+    public function apply(iterable $events) : void
     {
-//        $this->tasks = $this->storage->load();
-        $this->tasks = [];
+        $this->tasks = $this->storage->load();
 
         foreach ($events as $event) {
             switch (get_class($event)) {

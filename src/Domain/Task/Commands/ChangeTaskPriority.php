@@ -19,7 +19,7 @@ final class ChangeTaskPriority
     /**
      * @throws TaskNotFound
      */
-    public function execute(string $id, string $newPriority) : void
+    public function execute(string $id, int $newPriority) : void
     {
         $task = $this->getTaskById->execute($id);
 

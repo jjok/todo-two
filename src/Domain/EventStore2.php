@@ -3,27 +3,25 @@
 namespace jjok\TodoTwo\Domain;
 
 use jjok\TodoTwo\Domain\Task\Id as TaskId;
-use jjok\TodoTwo\Domain\Task\Projections\AllTasksProjector;
 
 //TODO This better?
 final class EventStore2 implements EventStore, EventStream
 {
-    public function __construct(EventStore $eventStore, EventStream $eventStream, AllTasksProjector $projector)
+    public function __construct(EventStore $eventStore, EventStream $eventStream/*, AllTasksProjector $projector*/)
     {
         $this->eventStore = $eventStore;
         $this->eventStream = $eventStream;
-        $this->projector = $projector;
+//        $this->projector = $projector;
     }
 
     private $eventStore, $eventStream;
-    private $projector;
+//    private $projector;
 
     public function push(Event ...$events): void
     {
         $this->eventStore->push(...$events);
 
-        //TODO Just apply $events, rather rebuilding with all events
-        $this->projector->rebuild($this->eventStream->all());
+//        $this->projector->apply($events);
     }
 
     public function all(): \Traversable

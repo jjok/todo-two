@@ -3,6 +3,7 @@
 namespace jjok\TodoTwo\Domain\Task\Commands;
 
 use jjok\TodoTwo\Domain\EventStore2;
+use jjok\TodoTwo\Domain\ProjectionBuildingEventStore;
 use jjok\TodoTwo\Domain\Task\Projections\AllTasksProjector;
 use jjok\TodoTwo\Infrastructure\File\EventStore;
 use jjok\TodoTwo\Infrastructure\File\EventStream;
@@ -16,13 +17,12 @@ abstract class CommandTest extends TestCase
         parent::setUp();
 
         $file = new \SplTempFileObject();
-        $this->projection = new TempAllTasksStorage(self::PROJECTION_FILE);
-        $this->eventStore = /*new ProjectionBuildingEventStore(*/new EventStore($file)/*, new AllTasksProjector($this->projection))*/;
+        $this->projection = new TempAllTasksStorage();
+        $this->eventStore = new ProjectionBuildingEventStore(new EventStore($file), new AllTasksProjector($this->projection));
         $this->eventStream = new EventStream($file);
         $this->eventStore2 = new EventStore2(
             $this->eventStore,
-            $this->eventStream,
-            new AllTasksProjector($this->projection)
+            $this->eventStream
         );
     }
 
@@ -30,8 +30,6 @@ abstract class CommandTest extends TestCase
     protected $eventStore;
     protected $eventStream;
     protected $eventStore2;
-
-    private const PROJECTION_FILE = './all-tasks.json';
 
     protected function givenTaskAlreadyExists(string $id, string $name, int $priority) : void
     {

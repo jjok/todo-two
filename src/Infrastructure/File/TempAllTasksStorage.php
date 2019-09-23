@@ -6,10 +6,10 @@ use jjok\TodoTwo\Domain\Task\Projections\AllTasksStorage as AllTasksStorageInter
 
 final class TempAllTasksStorage implements AllTasksStorageInterface
 {
-    public function __construct(string $filename)
+    public function __construct()
     {
-        $this->filename = $filename;
-        $this->storage = new AllTasksStorage($filename);
+        $this->filename = tempnam('', 'all-tasks-');
+        $this->storage = new AllTasksStorage($this->filename);
     }
 
     private $filename, $storage;
@@ -26,8 +26,6 @@ final class TempAllTasksStorage implements AllTasksStorageInterface
 
     public function __destruct()
     {
-        if(file_exists($this->filename)) {
-            unlink($this->filename);
-        }
+        unlink($this->filename);
     }
 }

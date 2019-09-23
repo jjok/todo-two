@@ -203,7 +203,7 @@ final class AllTasksProjectorTest extends TestCase
         $eventStream = new EventStream($file);
 
         $projection = new AllTasksProjector(new TempAllTasksStorage(self::PROJECTION_FILE));
-        $projection->rebuild($eventStream->all());
+        $projection->apply($eventStream->all());
 
         $actualProjection = $projection->toArray();
 
@@ -236,7 +236,7 @@ final class AllTasksProjectorTest extends TestCase
             'Can not create task "The name of the task" with ID "4ef9c809-3e53-4341-a32f-cf3249df65cc" as it already exists'
         );
 
-        $projection->rebuild($eventStream->all());
+        $projection->apply($eventStream->all());
     }
 
     public function invalidEventProvider() : array
@@ -277,6 +277,6 @@ final class AllTasksProjectorTest extends TestCase
             'can not be applied as task with ID "4ef9c809-3e53-4341-a32f-cf3249df65cc" does not exist'
         );
 
-        $projection->rebuild($eventStream->all());
+        $projection->apply($eventStream->all());
     }
 }
