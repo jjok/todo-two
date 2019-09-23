@@ -17,7 +17,7 @@ final class ChangeTaskPriorityTest extends CommandTest
     {
         $this->givenTaskAlreadyExists($id, 'Task name', $originalPriority);
 
-        $changeTaskPriority = new ChangeTaskPriority($this->eventStore2, new GetById($this->eventStore2));
+        $changeTaskPriority = new ChangeTaskPriority($this->eventStore, new GetById($this->eventStream));
         $changeTaskPriority->execute($id, $newPriority);
 
         $this->assertTaskPriorityWasChanged($id, $newPriority);
@@ -38,7 +38,7 @@ final class ChangeTaskPriorityTest extends CommandTest
      */
     public function a_task_priority_cannot_be_changed_if_the_task_does_not_exist(string $id, int $newPriority) : void
     {
-        $changeTaskPriority = new ChangeTaskPriority($this->eventStore2, new GetById($this->eventStore2));
+        $changeTaskPriority = new ChangeTaskPriority($this->eventStore, new GetById($this->eventStream));
 
         $this->expectException(TaskNotFound::class);
 

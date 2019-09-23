@@ -11,7 +11,7 @@ final class CreateTaskTest extends CommandTest
      */
     public function a_task_can_be_created(string $id, string $name, int $priority) : void
     {
-        $createTask = new CreateTask($this->eventStore2);
+        $createTask = new CreateTask($this->eventStore);
 
         $createTask->execute($id, $name, $priority);
 

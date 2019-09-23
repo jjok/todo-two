@@ -16,7 +16,7 @@ final class CompleteTaskTest extends CommandTest
     {
         $this->givenTaskAlreadyExists($id, 'The name of the task', 50);
 
-        $completeTask = new CompleteTask($this->eventStore2, new GetById($this->eventStore2));
+        $completeTask = new CompleteTask($this->eventStore, new GetById($this->eventStream));
         $completeTask->execute($id, $by);
 
         $this->assertTaskWasRecentlyCompleted($id, $by);
@@ -39,7 +39,7 @@ final class CompleteTaskTest extends CommandTest
      */
     public function a_task_cannot_be_completed_if_it_has_not_been_created(string $id, string $by) : void
     {
-        $completeTask = new CompleteTask($this->eventStore2, new GetById($this->eventStore2));
+        $completeTask = new CompleteTask($this->eventStore, new GetById($this->eventStream));
 
         $this->expectException(TaskNotFound::class);
 

@@ -20,20 +20,20 @@ abstract class CommandTest extends TestCase
         $this->projection = new TempAllTasksStorage();
         $this->eventStore = new ProjectionBuildingEventStore(new EventStore($file), new AllTasksProjector($this->projection));
         $this->eventStream = new EventStream($file);
-        $this->eventStore2 = new EventStore2(
-            $this->eventStore,
-            $this->eventStream
-        );
+//        $this->eventStore2 = new EventStore2(
+//            $this->eventStore,
+//            $this->eventStream
+//        );
     }
 
     private $projection;
     protected $eventStore;
     protected $eventStream;
-    protected $eventStore2;
+//    protected $eventStore2;
 
     protected function givenTaskAlreadyExists(string $id, string $name, int $priority) : void
     {
-        $createTask = new CreateTask($this->eventStore2);
+        $createTask = new CreateTask($this->eventStore);
 
         $createTask->execute($id, $name, $priority);
     }
