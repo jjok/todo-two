@@ -7,12 +7,12 @@ use jjok\TodoTwo\Domain\Task\Id as TaskId;
 interface EventStream
 {
     /**
-     * @return Event[]|\Generator
+     * @return Event[]
      */
-    public function all() : \Traversable;
+    public function all() : iterable;
 
     /**
-     * @return Event[]|\Generator
+     * @return Event[]
      */
-    public function filterByTaskId(TaskId $id) : \Traversable;
+    public function filterByTaskId(TaskId $id) : iterable;
 }

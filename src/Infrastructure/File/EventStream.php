@@ -21,7 +21,7 @@ final class EventStream implements \jjok\TodoTwo\Domain\EventStream
 
     private $file;
 
-    public function all() : \Traversable
+    public function all() : iterable
     {
         foreach ($this->file as $line) {
             $serialisedEvent = SerialisedEvent::fromJson($line);
@@ -30,7 +30,7 @@ final class EventStream implements \jjok\TodoTwo\Domain\EventStream
         }
     }
 
-    public function filterByTaskId(TaskId $id) : \Traversable
+    public function filterByTaskId(TaskId $id) : iterable
     {
         foreach ($this->file as $line) {
             $serialisedEvent = SerialisedEvent::fromJson($line);
