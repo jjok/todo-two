@@ -9,9 +9,9 @@ Run (TODO)
     
 Test
 
-    docker run --rm -it -v $HOME/Workspace/todoTwo:/tmp todotwo vendor/bin/phpunit
-
     docker run --rm -it -v $HOME/Workspace/todoTwo:/tmp todotwo php composer.phar install
+
+    docker run --rm -it -v $HOME/Workspace/todoTwo:/tmp todotwo vendor/bin/phpunit
 
 TODO
 ----
