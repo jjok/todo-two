@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace jjok\TodoTwo\Domain\Task\Commands;
 
@@ -16,7 +16,8 @@ final class CreateTask
 
     public function execute(string $id, string $name, int $priority) : void
     {
-        //TODO check task doesn't already exist? By Name?
+        //TODO check ID is unique
+        //TODO check name is unique
 
         $task = Task::create($id, $name, $priority);
 

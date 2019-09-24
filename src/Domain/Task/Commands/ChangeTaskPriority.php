@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace jjok\TodoTwo\Domain\Task\Commands;
 
@@ -16,9 +16,7 @@ final class ChangeTaskPriority
 
     private $eventStore, $getTaskById;
 
-    /**
-     * @throws TaskNotFound
-     */
+    /** @throws TaskNotFound */
     public function execute(string $id, int $newPriority) : void
     {
         $task = $this->getTaskById->execute($id);
