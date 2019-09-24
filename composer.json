@@ -1,4 +1,5 @@
 {
+    "name": "jjok/todo-two-domain",
     "autoload": {
         "psr-4": {"jjok\\TodoTwo\\": "src/"}
     },
