@@ -16,12 +16,10 @@ use PHPUnit\Framework\TestCase;
 
 final class AllTasksProjectorTest extends TestCase
 {
-    private const PROJECTION_FILE = './all-tasks.json';
-
     /** @test */
     public function projection_is_initially_empty() : void
     {
-        $projection = new AllTasksProjector(new TempAllTasksStorage(self::PROJECTION_FILE));
+        $projection = new AllTasksProjector(new TempAllTasksStorage());
 
         $this->assertEquals([], $projection->toArray());
     }
@@ -198,11 +196,11 @@ final class AllTasksProjectorTest extends TestCase
     {
         $file = new \SplTempFileObject();
         $eventStore = new EventStore($file);
-        $eventStore->push(...$events);
-
         $eventStream = new EventStream($file);
 
-        $projection = new AllTasksProjector(new TempAllTasksStorage(self::PROJECTION_FILE));
+        $eventStore->push(...$events);
+
+        $projection = new AllTasksProjector(new TempAllTasksStorage());
         $projection->apply($eventStream->all());
 
         $actualProjection = $projection->toArray();
@@ -215,21 +213,20 @@ final class AllTasksProjectorTest extends TestCase
     {
         $file = new \SplTempFileObject();
         $eventStore = new EventStore($file);
-
-        $eventStore->push(TaskWasCreated::with(
-            Id::fromString('4ef9c809-3e53-4341-a32f-cf3249df65cc'),
-            'The name of the task',
-            Priority::fromInt(50)
-        ));
-        $eventStore->push(TaskWasCreated::with(
-            Id::fromString('4ef9c809-3e53-4341-a32f-cf3249df65cc'),
-            'The name of the task',
-            Priority::fromInt(50)
-        ));
-
         $eventStream = new EventStream($file);
 
-        $projection = new AllTasksProjector(new TempAllTasksStorage(self::PROJECTION_FILE));
+        $eventStore->push(TaskWasCreated::with(
+            Id::fromString('4ef9c809-3e53-4341-a32f-cf3249df65cc'),
+            'The name of the task',
+            Priority::fromInt(50)
+        ));
+        $eventStore->push(TaskWasCreated::with(
+            Id::fromString('4ef9c809-3e53-4341-a32f-cf3249df65cc'),
+            'The name of the task',
+            Priority::fromInt(50)
+        ));
+
+        $projection = new AllTasksProjector(new TempAllTasksStorage());
 
         $this->expectException(InvalidEventStream::class);
         $this->expectExceptionMessage(
@@ -265,12 +262,11 @@ final class AllTasksProjectorTest extends TestCase
     {
         $file = new \SplTempFileObject();
         $eventStore = new EventStore($file);
+        $eventStream = new EventStream($file);
 
         $eventStore->push($event);
 
-        $eventStream = new EventStream($file);
-
-        $projection = new AllTasksProjector(new TempAllTasksStorage(self::PROJECTION_FILE));
+        $projection = new AllTasksProjector(new TempAllTasksStorage());
 
         $this->expectException(InvalidEventStream::class);
         $this->expectExceptionMessage(
