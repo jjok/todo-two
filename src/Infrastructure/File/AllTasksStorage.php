@@ -9,6 +9,10 @@ final class AllTasksStorage implements AllTasksStorageInterface
     public function __construct(string $filename)
     {
         $this->filename = $filename;
+
+        if(!file_exists($this->filename) && !touch($this->filename)) {
+            throw new \Exception(sprintf('Failed to create storage file %s', $this->filename));
+        }
     }
 
     private $filename;
