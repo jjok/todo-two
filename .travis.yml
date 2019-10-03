@@ -2,7 +2,7 @@ language: php
 
 php:
   - 7.3
-  - nightly
+#  - nightly
 
 before_script:
   - composer install
