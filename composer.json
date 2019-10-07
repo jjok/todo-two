@@ -7,6 +7,7 @@
         "psr-4": {"jjok\\TodoTwo\\": "tests/"}
     },
     "require": {
+        "php": "^7.2",
         "ext-json": "*",
         "ramsey/uuid": "^3.8"
     },

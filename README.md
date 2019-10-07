@@ -2,9 +2,7 @@
 ==========
 
 [![Build Status](https://travis-ci.org/jjok/todo-two.svg?branch=master)](https://travis-ci.org/jjok/todo-two)
-
 [![Maintainability](https://api.codeclimate.com/v1/badges/4f47d670a91db790d1f6/maintainability)](https://codeclimate.com/github/jjok/todo-two/maintainability)
-
 [![Test Coverage](https://api.codeclimate.com/v1/badges/4f47d670a91db790d1f6/test_coverage)](https://codeclimate.com/github/jjok/todo-two/test_coverage)
 
 
