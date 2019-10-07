@@ -1,20 +1,10 @@
+//TODO Two
+==========
 
-Build
+[![Build Status](https://travis-ci.org/jjok/todo-two.svg?branch=master)](https://travis-ci.org/jjok/todo-two)
 
-    docker build -t todotwo .
-
-Run (TODO)
-
-    docker run --rm -it todotwo 
-    
-Test
-
-    docker run --rm -it -v $HOME/Workspace/todoTwo:/tmp todotwo php composer.phar install
-
-    docker run --rm -it -v $HOME/Workspace/todoTwo:/tmp todotwo vendor/bin/phpunit
-
-TODO
-----
+TODO (ironically?)
+------------------
 
 * [X] Create task
 * [X] Complete task
