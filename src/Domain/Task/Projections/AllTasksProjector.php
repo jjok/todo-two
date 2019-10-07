@@ -24,26 +24,36 @@ final class AllTasksProjector
         $this->tasks = $this->storage->load();
 
         foreach ($events as $event) {
-            switch (get_class($event)) {
-                case TaskWasCreated::class:
-                    $this->applyTaskWasCreated($event);
-                    break;
-
-                case TaskWasCompleted::class:
-                    $this->applyTaskWasCompleted($event);
-                    break;
-
-                case TaskWasRenamed::class:
-                    $this->applyTaskWasRenamed($event);
-                    break;
-
-                case TaskPriorityWasChanged::class:
-                    $this->applyTaskPriorityWasChanged($event);
-                    break;
-            }
+            $this->applyEvent($event);
         }
 
         $this->storage->save($this->tasks);
+    }
+
+    /** @throws InvalidEventStream */
+    private function applyEvent(TaskEvent $event) : void
+    {
+        switch (get_class($event)) {
+            case TaskWasCreated::class:
+                /** @var TaskWasCreated $event */
+                $this->applyTaskWasCreated($event);
+                break;
+
+            case TaskWasCompleted::class:
+                /** @var TaskWasCompleted $event */
+                $this->applyTaskWasCompleted($event);
+                break;
+
+            case TaskWasRenamed::class:
+                /** @var TaskWasRenamed $event */
+                $this->applyTaskWasRenamed($event);
+                break;
+
+            case TaskPriorityWasChanged::class:
+                /** @var TaskPriorityWasChanged $event */
+                $this->applyTaskPriorityWasChanged($event);
+                break;
+        }
     }
 
     /** @throws InvalidEventStream */
