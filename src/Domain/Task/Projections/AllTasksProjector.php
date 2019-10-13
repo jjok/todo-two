@@ -81,7 +81,7 @@ final class AllTasksProjector
     }
 
     /** @throws InvalidEventStream */
-    public function applyTaskWasCompleted(TaskWasCompleted $event) : void
+    private function applyTaskWasCompleted(TaskWasCompleted $event) : void
     {
         $this->assertTaskAlreadyExists($event);
 
