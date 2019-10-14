@@ -14,6 +14,74 @@ use PHPUnit\Framework\TestCase;
 
 final class AllTasksProjectorTest extends TestCase
 {
+    private function task1WasCreated() : TaskWasCreated
+    {
+        return TaskWasCreated::with(
+            Id::fromString('4ef9c809-3e53-4341-a32f-cf3249df65cc'),
+            'The name of the task',
+            Priority::fromInt(50)
+        );
+    }
+
+    private function task1WasCompleted() : TaskWasCompleted
+    {
+        return new TaskWasCompleted(
+            Id::fromString('4ef9c809-3e53-4341-a32f-cf3249df65cc')->toString(),
+            'Jonathan',
+            123456789
+        );
+    }
+
+    private function task1WasRenamed() : TaskWasRenamed
+    {
+        return TaskWasRenamed::with(
+            Id::fromString('4ef9c809-3e53-4341-a32f-cf3249df65cc'),
+            'A different name'
+        );
+    }
+
+    private function task1PriorityWasChanged() : TaskPriorityWasChanged
+    {
+        return TaskPriorityWasChanged::with(
+            Id::fromString('4ef9c809-3e53-4341-a32f-cf3249df65cc'),
+            Priority::fromInt(20)
+        );
+    }
+
+    private function task2WasCreated() : TaskWasCreated
+    {
+        return TaskWasCreated::with(
+            Id::fromString('4ef9c809-3e53-4341-a32f-cf3249df65dd'),
+            'The name of another task',
+            Priority::fromInt(60)
+        );
+    }
+
+    private function task2WasCompleted() : TaskWasCompleted
+    {
+        return new TaskWasCompleted(
+            Id::fromString('4ef9c809-3e53-4341-a32f-cf3249df65dd')->toString(),
+            'Someone Else',
+            234567890
+        );
+    }
+
+    private function task2WasRenamed() : TaskWasRenamed
+    {
+        return TaskWasRenamed::with(
+            Id::fromString('4ef9c809-3e53-4341-a32f-cf3249df65dd'),
+            'A second task'
+        );
+    }
+
+    private function task2PriorityWasChanged() : TaskPriorityWasChanged
+    {
+        return TaskPriorityWasChanged::with(
+            Id::fromString('4ef9c809-3e53-4341-a32f-cf3249df65dd'),
+            Priority::fromInt(99)
+        );
+    }
+
     /** @test */
     public function projection_is_initially_empty() : void
     {
@@ -25,45 +93,10 @@ final class AllTasksProjectorTest extends TestCase
 
     public function eventProvider() : array
     {
-        $task1WasCreated = TaskWasCreated::with(
-            Id::fromString('4ef9c809-3e53-4341-a32f-cf3249df65cc'),
-            'The name of the task',
-            Priority::fromInt(50)
-        );
-        $task1WasCompleted = new TaskWasCompleted(
-            Id::fromString('4ef9c809-3e53-4341-a32f-cf3249df65cc')->toString(),
-            'Jonathan',
-            123456789
-        );
-        $task1WasRenamed = TaskWasRenamed::with(
-            Id::fromString('4ef9c809-3e53-4341-a32f-cf3249df65cc'),
-            'A different name'
-        );
-        $task1PriorityWasChanged = TaskPriorityWasChanged::with(
-            Id::fromString('4ef9c809-3e53-4341-a32f-cf3249df65cc'),
-            Priority::fromInt(20)
-        );
-        $task2WasCreated = TaskWasCreated::with(
-            Id::fromString('4ef9c809-3e53-4341-a32f-cf3249df65dd'),
-            'The name of another task',
-            Priority::fromInt(60)
-        );
-        $task2WasCompleted = new TaskWasCompleted(
-            Id::fromString('4ef9c809-3e53-4341-a32f-cf3249df65dd')->toString(),
-            'Someone Else',
-            234567890
-        );
-        $task2WasRenamed = TaskWasRenamed::with(
-            Id::fromString('4ef9c809-3e53-4341-a32f-cf3249df65dd'),
-            'A second task'
-        );
-        $task2PriorityWasChanged = TaskPriorityWasChanged::with(
-            Id::fromString('4ef9c809-3e53-4341-a32f-cf3249df65dd'),
-            Priority::fromInt(99)
-        );
-
         return [
-            [[$task1WasCreated], [
+            [[
+                $this->task1WasCreated(),
+            ], [
                 '4ef9c809-3e53-4341-a32f-cf3249df65cc' => array(
                     'id' => '4ef9c809-3e53-4341-a32f-cf3249df65cc',
                     'name' => 'The name of the task',
@@ -72,7 +105,10 @@ final class AllTasksProjectorTest extends TestCase
                     'lastCompletedBy' => null,
                 )
             ]],
-            [[$task1WasCreated, $task2WasCreated], [
+            [[
+                $this->task1WasCreated(),
+                $this->task2WasCreated(),
+            ], [
                 '4ef9c809-3e53-4341-a32f-cf3249df65cc' => array(
                     'id' => '4ef9c809-3e53-4341-a32f-cf3249df65cc',
                     'name' => 'The name of the task',
@@ -88,7 +124,11 @@ final class AllTasksProjectorTest extends TestCase
                     'lastCompletedBy' => null,
                 ),
             ]],
-            [[$task1WasCreated, $task2WasCreated, $task1WasCompleted], [
+            [[
+                $this->task1WasCreated(),
+                $this->task2WasCreated(),
+                $this->task1WasCompleted(),
+            ], [
                 '4ef9c809-3e53-4341-a32f-cf3249df65cc' => array(
                     'id' => '4ef9c809-3e53-4341-a32f-cf3249df65cc',
                     'name' => 'The name of the task',
@@ -104,7 +144,12 @@ final class AllTasksProjectorTest extends TestCase
                     'lastCompletedBy' => null,
                 ),
             ]],
-            [[$task1WasCreated, $task2WasCreated, $task1WasCompleted, $task1WasRenamed], [
+            [[
+                $this->task1WasCreated(),
+                $this->task2WasCreated(),
+                $this->task1WasCompleted(),
+                $this->task1WasRenamed(),
+            ], [
                 '4ef9c809-3e53-4341-a32f-cf3249df65cc' => array(
                     'id' => '4ef9c809-3e53-4341-a32f-cf3249df65cc',
                     'name' => 'A different name',
@@ -120,7 +165,13 @@ final class AllTasksProjectorTest extends TestCase
                     'lastCompletedBy' => null,
                 ),
             ]],
-            [[$task1WasCreated, $task2WasCreated, $task1WasCompleted, $task1WasRenamed, $task1PriorityWasChanged], [
+            [[
+                $this->task1WasCreated(),
+                $this->task2WasCreated(),
+                $this->task1WasCompleted(),
+                $this->task1WasRenamed(),
+                $this->task1PriorityWasChanged(),
+            ], [
                 '4ef9c809-3e53-4341-a32f-cf3249df65cc' => array(
                     'id' => '4ef9c809-3e53-4341-a32f-cf3249df65cc',
                     'name' => 'A different name',
@@ -136,7 +187,14 @@ final class AllTasksProjectorTest extends TestCase
                     'lastCompletedBy' => null,
                 ),
             ]],
-            [[$task1WasCreated, $task2WasCreated, $task1WasCompleted, $task1WasRenamed, $task1PriorityWasChanged, $task2WasCompleted], [
+            [[
+                $this->task1WasCreated(),
+                $this->task2WasCreated(),
+                $this->task1WasCompleted(),
+                $this->task1WasRenamed(),
+                $this->task1PriorityWasChanged(),
+                $this->task2WasCompleted(),
+            ], [
                 '4ef9c809-3e53-4341-a32f-cf3249df65cc' => array(
                     'id' => '4ef9c809-3e53-4341-a32f-cf3249df65cc',
                     'name' => 'A different name',
@@ -152,7 +210,15 @@ final class AllTasksProjectorTest extends TestCase
                     'lastCompletedBy' => 'Someone Else',
                 ),
             ]],
-            [[$task1WasCreated, $task2WasCreated, $task1WasCompleted, $task1WasRenamed, $task1PriorityWasChanged, $task2WasCompleted, $task2PriorityWasChanged], [
+            [[
+                $this->task1WasCreated(),
+                $this->task2WasCreated(),
+                $this->task1WasCompleted(),
+                $this->task1WasRenamed(),
+                $this->task1PriorityWasChanged(),
+                $this->task2WasCompleted(),
+                $this->task2PriorityWasChanged(),
+            ], [
                 '4ef9c809-3e53-4341-a32f-cf3249df65cc' => array(
                     'id' => '4ef9c809-3e53-4341-a32f-cf3249df65cc',
                     'name' => 'A different name',
@@ -168,7 +234,16 @@ final class AllTasksProjectorTest extends TestCase
                     'lastCompletedBy' => 'Someone Else',
                 ),
             ]],
-            [[$task1WasCreated, $task2WasCreated, $task1WasCompleted, $task1WasRenamed, $task1PriorityWasChanged, $task2WasCompleted, $task2PriorityWasChanged, $task2WasRenamed], [
+            [[
+                $this->task1WasCreated(),
+                $this->task2WasCreated(),
+                $this->task1WasCompleted(),
+                $this->task1WasRenamed(),
+                $this->task1PriorityWasChanged(),
+                $this->task2WasCompleted(),
+                $this->task2PriorityWasChanged(),
+                $this->task2WasRenamed(),
+            ], [
                 '4ef9c809-3e53-4341-a32f-cf3249df65cc' => array(
                     'id' => '4ef9c809-3e53-4341-a32f-cf3249df65cc',
                     'name' => 'A different name',
