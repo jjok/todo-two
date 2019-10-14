@@ -118,14 +118,6 @@ final class AllTasksProjector
             throw InvalidEventStream::taskDoesNotExist($event);
         }
     }
-
-    /**
-     * @deprecated Load projection from storage
-     */
-    public function toArray() : array
-    {
-        return array_values($this->tasks);
-    }
 }
 
 final class InvalidEventStream extends \Exception

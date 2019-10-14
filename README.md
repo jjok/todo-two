@@ -6,6 +6,12 @@
 [![Test Coverage](https://api.codeclimate.com/v1/badges/4f47d670a91db790d1f6/test_coverage)](https://codeclimate.com/github/jjok/todo-two/test_coverage)
 
 
+Test
+----
+
+    php ./vendor/bin/phpunit
+
+
 TODO (ironically?)
 ------------------
 
@@ -20,6 +26,7 @@ TODO (ironically?)
 * [X] Projection of all tasks with priority
 * [X] Save projection to file
 * [X] Update projections when event is stored
+* [ ] Add version to projection.
 * [ ] Add actual High, Medium, Low priority to All Tasks projection.
 * [ ] Make users a thing. Have an ID to complete tasks with.
 * [ ] Require task ID to be unique
