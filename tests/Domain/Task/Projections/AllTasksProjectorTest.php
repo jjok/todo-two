@@ -9,6 +9,8 @@ use jjok\TodoTwo\Domain\Task\Events\TaskWasCreated;
 use jjok\TodoTwo\Domain\Task\Events\TaskWasRenamed;
 use jjok\TodoTwo\Domain\Task\Id;
 use jjok\TodoTwo\Domain\Task\Priority;
+use jjok\TodoTwo\Infrastructure\File\EventStore;
+use jjok\TodoTwo\Infrastructure\File\EventStream;
 use jjok\TodoTwo\Infrastructure\File\TempAllTasksStorage;
 use PHPUnit\Framework\TestCase;
 
@@ -328,5 +330,26 @@ final class AllTasksProjectorTest extends TestCase
         );
 
         $projection->apply([$event]);
+    }
+
+    /**
+     * @test
+     * @dataProvider eventProvider
+     */
+    public function projection_can_be_rebuilt_from_event_stream(array $events, array $expectedProjection) : void
+    {
+        $file = new \SplTempFileObject();
+        $storage = new TempAllTasksStorage();
+        $projection = new AllTasksProjector($storage);
+        $eventStore = new EventStore($file);
+        $eventStream = new EventStream($file);
+
+        $eventStore->push(...$events);
+
+        $projection->apply([$this->task1WasCreated(), $this->task2WasCreated()]);
+
+        $projection->rebuild($eventStream);
+
+        $this->assertEquals($expectedProjection, $storage->load());
     }
 }

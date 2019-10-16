@@ -2,6 +2,7 @@
 
 namespace jjok\TodoTwo\Domain\Task\Projections;
 
+use jjok\TodoTwo\Domain\EventStream;
 use jjok\TodoTwo\Domain\Task\Event as TaskEvent;
 use jjok\TodoTwo\Domain\Task\Events\TaskPriorityWasChanged;
 use jjok\TodoTwo\Domain\Task\Events\TaskWasCompleted;
@@ -24,6 +25,18 @@ final class AllTasksProjector
         $this->tasks = $this->storage->load();
 
         foreach ($events as $event) {
+            $this->applyEvent($event);
+        }
+
+        $this->storage->save($this->tasks);
+    }
+
+    public function rebuild(EventStream $eventStream) : void
+    {
+        $this->tasks = [];
+
+        foreach ($eventStream->all() as $event) {
+            /** @var TaskEvent $event Seems a bit shady. I've probably got something wrong here. */
             $this->applyEvent($event);
         }
 
