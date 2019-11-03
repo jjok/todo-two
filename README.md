@@ -9,7 +9,7 @@
 Test
 ----
 
-    php ./vendor/bin/phpunit
+    ./vendor/bin/phpunit
 
 
 TODO (ironically?)
@@ -26,16 +26,16 @@ TODO (ironically?)
 * [X] Projection of all tasks with priority
 * [X] Save projection to file
 * [X] Update projections when event is stored
-* [ ] Add version to projection.
-* [ ] Add actual High, Medium, Low priority to All Tasks projection.
-* [ ] Make users a thing. Have an ID to complete tasks with.
+* [X] Command to rebuild projection
+* [X] Add actual High, Medium, Low priority to All Tasks projection. Or to API response?
+* [ ] HTTP frontend
+* [ ] Hass.io add-on
+* [ ] Home Assistant component
 * [ ] Require task ID to be unique
 * [ ] Require task name to be unique
-* [ ] HTTP frontend
-* [ ] Home Assistant component
-* [ ] Hass.io add-on
-* [ ] Migrate data from old app
-* [X] Command to rebuild projection
+* [X] Migrate data from old app
+* [ ] Add version to projection.
+* [ ] ~~Make users a thing. Have an ID to complete tasks with.~~
 * [ ] Home Assistant UI
 * [ ] Client? UI to create and edit tasks
 * [ ] Allow tasks to be archived when no longer required
