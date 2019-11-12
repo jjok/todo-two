@@ -2,6 +2,7 @@
 
 namespace jjok\TodoTwo\Domain\Task\Commands;
 
+use jjok\TodoTwo\Domain\Task\Id as TaskId;
 use jjok\TodoTwo\Domain\Task\Query\GetById;
 use jjok\TodoTwo\Domain\Task\Query\TaskNotFound;
 
@@ -18,7 +19,7 @@ final class RenameTaskTest extends CommandTest
         $this->givenTaskAlreadyExists($id, $originalName, 50);
 
         $renameTask = new RenameTask($this->eventStore, new GetById($this->eventStream));
-        $renameTask->execute($id, $newName);
+        $renameTask->execute(TaskId::fromString($id), $newName);
 
         $this->assertTaskWasRenamed($id, $newName);
     }
@@ -42,6 +43,6 @@ final class RenameTaskTest extends CommandTest
 
         $this->expectException(TaskNotFound::class);
 
-        $renameTask->execute($id, $newName);
+        $renameTask->execute(TaskId::fromString($id), $newName);
     }
 }

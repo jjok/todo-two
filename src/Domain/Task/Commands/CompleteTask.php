@@ -3,6 +3,7 @@
 namespace jjok\TodoTwo\Domain\Task\Commands;
 
 use jjok\TodoTwo\Domain\EventStore;
+use jjok\TodoTwo\Domain\Task\Id as TaskId;
 use jjok\TodoTwo\Domain\Task\Query\GetById as GetTaskById;
 use jjok\TodoTwo\Domain\Task\Query\TaskNotFound;
 
@@ -17,7 +18,7 @@ final class CompleteTask
     private $eventStore, $getTaskById;
 
     /** @throws TaskNotFound */
-    public function execute(string $id, string $by) : void
+    public function execute(TaskId $id, string $by) : void
     {
         $task = $this->getTaskById->execute($id);
 

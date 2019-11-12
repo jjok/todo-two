@@ -3,6 +3,7 @@
 namespace jjok\TodoTwo\Domain\Task\Commands;
 
 use jjok\TodoTwo\Domain\EventStore;
+use jjok\TodoTwo\Domain\Task\Id as TaskId;
 use jjok\TodoTwo\Domain\Task\Query\GetById as GetTaskById;
 use jjok\TodoTwo\Domain\Task\Query\TaskNotFound;
 
@@ -19,7 +20,7 @@ final class ChangeTaskPriority
     /** @throws TaskNotFound */
     public function execute(string $id, int $newPriority) : void
     {
-        $task = $this->getTaskById->execute($id);
+        $task = $this->getTaskById->execute(TaskId::fromString($id));
 
         $task->updatePriority($newPriority);
 

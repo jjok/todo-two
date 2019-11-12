@@ -4,6 +4,7 @@ namespace jjok\TodoTwo\Domain\Task\Query;
 
 use jjok\TodoTwo\Domain\EventStream;
 use jjok\TodoTwo\Domain\Task;
+use jjok\TodoTwo\Domain\Task\Id as TaskId;
 
 final class GetById
 {
@@ -17,15 +18,15 @@ final class GetById
     /**
      * @throws TaskNotFound
      */
-    public function execute(string $id) : Task
+    public function execute(TaskId $id) : Task
     {
         $events = [];
-        foreach($this->eventStream->filterByTaskId(Task\Id::fromString($id)) as $event) {
+        foreach($this->eventStream->filterByTaskId($id) as $event) {
             $events[] = $event;
         }
 
         if(count($events) === 0) {
-            throw TaskNotFound::fromId(Task\Id::fromString($id));
+            throw TaskNotFound::fromId($id);
         }
 
         return Task::fromEvents(...$events);

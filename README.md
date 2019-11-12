@@ -35,7 +35,7 @@ TODO (ironically?)
 * [ ] Require task name to be unique
 * [X] Migrate data from old app
 * [ ] Add version to projection.
-* [ ] ~~Make users a thing. Have an ID to complete tasks with.~~
+* [ ] Make users a thing. Have an ID to complete tasks with.
 * [ ] Home Assistant UI
 * [ ] Client? UI to create and edit tasks
 * [ ] Allow tasks to be archived when no longer required

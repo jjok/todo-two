@@ -2,6 +2,7 @@
 
 namespace jjok\TodoTwo\Domain\Task\Commands;
 
+use jjok\TodoTwo\Domain\Task\Id as TaskId;
 use jjok\TodoTwo\Domain\Task\Query\GetById;
 use jjok\TodoTwo\Domain\Task\Query\TaskNotFound;
 
@@ -17,7 +18,7 @@ final class CompleteTaskTest extends CommandTest
         $this->givenTaskAlreadyExists($id, 'The name of the task', 50);
 
         $completeTask = new CompleteTask($this->eventStore, new GetById($this->eventStream));
-        $completeTask->execute($id, $by);
+        $completeTask->execute(TaskId::fromString($id), $by);
 
         $this->assertTaskWasRecentlyCompleted($id, $by);
     }
@@ -43,6 +44,6 @@ final class CompleteTaskTest extends CommandTest
 
         $this->expectException(TaskNotFound::class);
 
-        $completeTask->execute($id, $by);
+        $completeTask->execute(TaskId::fromString($id), $by);
     }
 }
