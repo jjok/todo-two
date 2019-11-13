@@ -6,21 +6,25 @@ use jjok\TodoTwo\Domain\EventStore;
 use jjok\TodoTwo\Domain\Task\Id as TaskId;
 use jjok\TodoTwo\Domain\Task\Query\GetById as GetTaskById;
 use jjok\TodoTwo\Domain\Task\Query\TaskNotFound;
+use jjok\TodoTwo\Domain\User\Id as UserId;
+use jjok\TodoTwo\Domain\User\Query\GetUserById;
 
 final class CompleteTask
 {
-    public function __construct(EventStore $eventStore, GetTaskById $getTaskById)
+    public function __construct(EventStore $eventStore, GetTaskById $getTaskById, GetUserById $getUserById)
     {
         $this->eventStore = $eventStore;
         $this->getTaskById = $getTaskById;
+        $this->getUserById = $getUserById;
     }
 
-    private $eventStore, $getTaskById;
+    private $eventStore, $getTaskById, $getUserById;
 
     /** @throws TaskNotFound */
-    public function execute(TaskId $id, string $by) : void
+    public function execute(TaskId $taskId, UserId $userId, string $by) : void
     {
-        $task = $this->getTaskById->execute($id);
+        $task = $this->getTaskById->execute($taskId);
+        $user = $this->getUserById->execute($userId);
 
         $task->complete($by);
 
