@@ -5,6 +5,7 @@ namespace jjok\TodoTwo\Domain\Task\Commands;
 use jjok\TodoTwo\Domain\Task\Id as TaskId;
 use jjok\TodoTwo\Domain\Task\Query\GetById;
 use jjok\TodoTwo\Domain\Task\Query\TaskNotFound;
+use jjok\TodoTwo\Domain\User;
 use jjok\TodoTwo\Domain\User\Id as UserId;
 use jjok\TodoTwo\Domain\User\NotFound as UserNotFound;
 use jjok\TodoTwo\Infrastructure\InMemory\GetUserById;
@@ -21,10 +22,10 @@ final class CompleteTaskTest extends CommandTest
     {
         $this->givenTaskAlreadyExists($taskId, 'The name of the task', 50);
 
-        $completeTask = new CompleteTask($this->eventStore, new GetById($this->eventStream), new GetUserById(array(
-            '887ca7d3-27e3-4964-8378-0f3d0d4aa6d3' => 'Jonathan',
-            '1a6d2a28-e9ca-4695-875d-f80ab4c9b8d6' => 'Someone Else',
-        )));
+        $completeTask = new CompleteTask($this->eventStore, new GetById($this->eventStream), new GetUserById(
+            new User(UserId::fromString('887ca7d3-27e3-4964-8378-0f3d0d4aa6d3'), 'Jonathan'),
+            new User(UserId::fromString('1a6d2a28-e9ca-4695-875d-f80ab4c9b8d6'), 'Someone Else')
+        ));
 
         $completeTask->execute(TaskId::fromString($taskId), UserId::fromString($userId), $by);
 
@@ -50,7 +51,10 @@ final class CompleteTaskTest extends CommandTest
     {
         $userId = UserId::fromString(Uuid::uuid4());
 
-        $completeTask = new CompleteTask($this->eventStore, new GetById($this->eventStream), new GetUserById([]));
+        $completeTask = new CompleteTask($this->eventStore, new GetById($this->eventStream), new GetUserById(
+            new User(UserId::fromString('887ca7d3-27e3-4964-8378-0f3d0d4aa6d3'), 'Jonathan'),
+            new User(UserId::fromString('1a6d2a28-e9ca-4695-875d-f80ab4c9b8d6'), 'Someone Else')
+        ));
 
         $this->expectException(TaskNotFound::class);
 
@@ -66,7 +70,9 @@ final class CompleteTaskTest extends CommandTest
     {
         $this->givenTaskAlreadyExists($taskId, 'The name of the task', 50);
 
-        $completeTask = new CompleteTask($this->eventStore, new GetById($this->eventStream), new GetUserById([]));
+        $completeTask = new CompleteTask($this->eventStore, new GetById($this->eventStream), new GetUserById(
+            new User(UserId::fromString('887ca7d3-27e3-4964-8378-0f3d0d4aa6d4'), 'Some other user'),
+        ));
 
         $this->expectException(UserNotFound::class);
 

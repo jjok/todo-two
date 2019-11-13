@@ -7,14 +7,14 @@ use jjok\TodoTwo\Domain\User\Id;
 
 final class GetUserById implements \jjok\TodoTwo\Domain\User\Query\GetUserById
 {
-//    public function __construct(User ...$users)
-    public function __construct(array $userData)
+    public function __construct(User ...$users)
+//    public function __construct(array $userData)
     {
-        $users = [];
-
-        foreach($userData as $id => $name) {
-            $users[] = new User(Id::fromString($id), $name);
-        }
+//        $users = [];
+//
+//        foreach($userData as $id => $name) {
+//            $users[] = new User(Id::fromString($id), $name);
+//        }
 
         $this->users = $users;
     }
