@@ -51,7 +51,7 @@ final class SerialisedEvent
             case TaskWasCompleted::class:
                 return new TaskWasCompleted(
                     $this->payload['taskId'],
-                    $this->payload['by'],
+                    $this->payload['userId'],
                     $this->payload['timestamp']
                 );
 

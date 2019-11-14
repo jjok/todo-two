@@ -29,7 +29,7 @@ final class CompleteTask
         $task = $this->getTaskById->execute($taskId);
         $user = $this->getUserById->execute($userId);
 
-        $task->complete($user->name());
+        $task->complete($user->id(), $user->name());
 
         $this->eventStore->push(...$task->releaseEvents());
     }

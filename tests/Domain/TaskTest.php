@@ -9,6 +9,7 @@ use jjok\TodoTwo\Domain\Task\Events\TaskWasRenamed;
 use jjok\TodoTwo\Domain\Task\Id;
 use jjok\TodoTwo\Domain\Task\Event;
 use jjok\TodoTwo\Domain\Task\Priority;
+use jjok\TodoTwo\Domain\User\Id as UserId;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 
@@ -51,11 +52,12 @@ final class TaskTest extends TestCase
     public function an_existing_task_can_be_completed() : void
     {
         $task = $this->previouslyCreatedEvent();
-        $user = 'Jonathan';
+        $userId = UserId::fromString('1a6d2a28-e9ca-4695-875d-f80ab4c9b8d6');
+        $userName = 'Jonathan';
 
-        $task->complete($user);
+        $task->complete($userId, $userName);
 
-        $this->assertTaskWasRecentlyCompleted($user, $task);
+        $this->assertTaskWasRecentlyCompleted($userName, $task);
     }
 
     private function assertTaskWasRecentlyCompleted(string $user, Task $task) : void

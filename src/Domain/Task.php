@@ -9,6 +9,7 @@ use jjok\TodoTwo\Domain\Task\Events\TaskWasRenamed;
 use jjok\TodoTwo\Domain\Task\Event;
 use jjok\TodoTwo\Domain\Task\Id;
 use jjok\TodoTwo\Domain\Task\Priority;
+use jjok\TodoTwo\Domain\User\Id as UserId;
 
 final class Task
 {
@@ -55,7 +56,7 @@ final class Task
     private $id, $name, $priority;
     private $lastCompletedAt, $lastCompletedBy;
 
-    public function complete(string $by) : void
+    public function complete(UserId $userId, string $by) : void
     {
         $taskWasCompleted = TaskWasCompleted::with($this->id, $by);
 

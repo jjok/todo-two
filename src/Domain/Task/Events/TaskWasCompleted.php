@@ -40,7 +40,7 @@ final class TaskWasCompleted implements Event
     {
         return array(
             'taskId' => $this->taskId(),
-            'by' => $this->by(),
+            'userId' => $this->by(),
             'timestamp' => $this->timestamp(),
         );
     }
