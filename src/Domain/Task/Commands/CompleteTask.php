@@ -20,13 +20,16 @@ final class CompleteTask
 
     private $eventStore, $getTaskById, $getUserById;
 
-    /** @throws TaskNotFound */
-    public function execute(TaskId $taskId, UserId $userId, string $by) : void
+    /**
+     * @throws TaskNotFound
+     * @throws \jjok\TodoTwo\Domain\User\NotFound
+     */
+    public function execute(TaskId $taskId, UserId $userId) : void
     {
         $task = $this->getTaskById->execute($taskId);
         $user = $this->getUserById->execute($userId);
 
-        $task->complete($by);
+        $task->complete($user->name());
 
         $this->eventStore->push(...$task->releaseEvents());
     }

@@ -9,10 +9,21 @@ use jjok\TodoTwo\Domain\User;
 use jjok\TodoTwo\Domain\User\Id as UserId;
 use jjok\TodoTwo\Domain\User\NotFound as UserNotFound;
 use jjok\TodoTwo\Infrastructure\InMemory\GetUserById;
-use Ramsey\Uuid\Uuid;
 
 final class CompleteTaskTest extends CommandTest
 {
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->getUserById = new GetUserById(
+            new User(UserId::fromString('887ca7d3-27e3-4964-8378-0f3d0d4aa6d3'), 'Jonathan'),
+            new User(UserId::fromString('1a6d2a28-e9ca-4695-875d-f80ab4c9b8d6'), 'Someone Else')
+        );
+    }
+
+    private $getUserById;
+
     /**
      * @test
      * @testWith ["4ef9c809-3e53-4341-a32f-cf3249df65cc", "887ca7d3-27e3-4964-8378-0f3d0d4aa6d3", "Jonathan"    ]
@@ -22,12 +33,9 @@ final class CompleteTaskTest extends CommandTest
     {
         $this->givenTaskAlreadyExists($taskId, 'The name of the task', 50);
 
-        $completeTask = new CompleteTask($this->eventStore, new GetById($this->eventStream), new GetUserById(
-            new User(UserId::fromString('887ca7d3-27e3-4964-8378-0f3d0d4aa6d3'), 'Jonathan'),
-            new User(UserId::fromString('1a6d2a28-e9ca-4695-875d-f80ab4c9b8d6'), 'Someone Else')
-        ));
+        $completeTask = new CompleteTask($this->eventStore, new GetById($this->eventStream), $this->getUserById);
 
-        $completeTask->execute(TaskId::fromString($taskId), UserId::fromString($userId), $by);
+        $completeTask->execute(TaskId::fromString($taskId), UserId::fromString($userId));
 
         $this->assertTaskWasRecentlyCompleted($taskId, $by);
     }
@@ -44,38 +52,31 @@ final class CompleteTaskTest extends CommandTest
 
     /**
      * @test
-     * @testWith ["4ef9c809-3e53-4341-a32f-cf3249df65cc", "Jonathan"    ]
-     *           ["4ef9c809-3e53-4341-a32f-cf3249df65dd", "Someone Else"]
+     * @testWith ["4ef9c809-3e53-4341-a32f-cf3249df65cc", "887ca7d3-27e3-4964-8378-0f3d0d4aa6d3"]
+     *           ["4ef9c809-3e53-4341-a32f-cf3249df65dd", "1a6d2a28-e9ca-4695-875d-f80ab4c9b8d6"]
      */
-    public function a_task_cannot_be_completed_if_it_has_not_been_created(string $id, string $by) : void
+    public function a_task_cannot_be_completed_if_it_has_not_been_created(string $taskId, string $userId) : void
     {
-        $userId = UserId::fromString(Uuid::uuid4());
-
-        $completeTask = new CompleteTask($this->eventStore, new GetById($this->eventStream), new GetUserById(
-            new User(UserId::fromString('887ca7d3-27e3-4964-8378-0f3d0d4aa6d3'), 'Jonathan'),
-            new User(UserId::fromString('1a6d2a28-e9ca-4695-875d-f80ab4c9b8d6'), 'Someone Else')
-        ));
+        $completeTask = new CompleteTask($this->eventStore, new GetById($this->eventStream), $this->getUserById);
 
         $this->expectException(TaskNotFound::class);
 
-        $completeTask->execute(TaskId::fromString($id), $userId, $by);
+        $completeTask->execute(TaskId::fromString($taskId), UserId::fromString($userId));
     }
 
     /**
      * @test
-     * @testWith ["4ef9c809-3e53-4341-a32f-cf3249df65cc", "887ca7d3-27e3-4964-8378-0f3d0d4aa6d3", "Jonathan"    ]
-     *           ["4ef9c809-3e53-4341-a32f-cf3249df65dd", "1a6d2a28-e9ca-4695-875d-f80ab4c9b8d6", "Someone Else"]
+     * @testWith ["4ef9c809-3e53-4341-a32f-cf3249df65cc", "887ca7d3-27e3-4964-8378-0f3d0d4aa6d0"]
+     *           ["4ef9c809-3e53-4341-a32f-cf3249df65dd", "1a6d2a28-e9ca-4695-875d-f80ab4c9b8d0"]
      */
-    public function a_task_cannot_be_completed_by_an_unregistered_user(string $taskId, string $userId, string $by) : void
+    public function a_task_cannot_be_completed_by_an_unregistered_user(string $taskId, string $userId) : void
     {
         $this->givenTaskAlreadyExists($taskId, 'The name of the task', 50);
 
-        $completeTask = new CompleteTask($this->eventStore, new GetById($this->eventStream), new GetUserById(
-            new User(UserId::fromString('887ca7d3-27e3-4964-8378-0f3d0d4aa6d4'), 'Some other user'),
-        ));
+        $completeTask = new CompleteTask($this->eventStore, new GetById($this->eventStream), $this->getUserById);
 
         $this->expectException(UserNotFound::class);
 
-        $completeTask->execute(TaskId::fromString($taskId), UserId::fromString($userId), $by);
+        $completeTask->execute(TaskId::fromString($taskId), UserId::fromString($userId));
     }
 }
