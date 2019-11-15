@@ -19,13 +19,20 @@ final class AllTasksStorage implements AllTasksStorageInterface
 
     public function save(array $allTasks): void
     {
-        if(file_put_contents($this->filename, json_encode($allTasks, JSON_PRETTY_PRINT)) === false) {
+        $data = array(
+//            'version' => $version,
+            'data' => $allTasks,
+        );
+
+        if(file_put_contents($this->filename, json_encode($data, JSON_PRETTY_PRINT)) === false) {
             throw new \Exception(sprintf('Failed to save projection to "%s".', $this->filename));
         }
     }
 
     public function load(): array
     {
-        return json_decode(file_get_contents($this->filename), true) ?? [];
+        $decoded = json_decode(file_get_contents($this->filename), true);
+
+        return $decoded['data'] ?? [];
     }
 }
