@@ -277,6 +277,25 @@ final class AllTasksProjectorTest extends TestCase
         $this->assertEquals($expectedProjection, $storage->load());
     }
 
+//    /** @test */
+//    public function each_event_applied_to_the_projection_increments_the_version() : void
+//    {
+//        $storage = new TempAllTasksStorage();
+//        $projection = new AllTasksProjector($storage);
+//
+//        $this->assertSame(0, $storage->version());
+//
+//        $projection->apply([$this->task1WasCreated()]);
+//
+//        $this->assertSame(1, $storage->version());
+//
+//        $projection->apply([$this->task2WasCreated()]);
+//        $projection->apply([$this->task1WasCompleted()]);
+//        $projection->apply([$this->task1WasRenamed(), $this->task1PriorityWasChanged()]);
+//        $projection->apply([$this->task2WasCompleted()]);
+//        $projection->apply([$this->task2PriorityWasChanged(), $this->task2WasRenamed()]);
+//    }
+
     /** @test */
     public function a_task_can_not_be_created_twice() : void
     {

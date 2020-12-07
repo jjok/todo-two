@@ -8,27 +8,32 @@ use jjok\TodoTwo\Domain\Task\Events\TaskPriorityWasChanged;
 use jjok\TodoTwo\Domain\Task\Events\TaskWasCompleted;
 use jjok\TodoTwo\Domain\Task\Events\TaskWasCreated;
 use jjok\TodoTwo\Domain\Task\Events\TaskWasRenamed;
+//use jjok\TodoTwo\Domain\User\Id;
+//use jjok\TodoTwo\Domain\User\Query\GetUserById;
 
 final class AllTasksProjector
 {
-    public function __construct(AllTasksStorage $storage)
+    public function __construct(AllTasksStorage $storage/*, GetUserById $getUserById*/)
     {
         $this->storage = $storage;
+//        $this->getUserById = $getUserById;
     }
 
-    private $storage;
+    private $storage, $getUserById;
     private $tasks = [];
 
     /** @throws InvalidEventStream */
     public function apply(iterable $events) : void
     {
         $this->tasks = $this->storage->load();
+//        $version = $this->storage->version();
 
         foreach ($events as $event) {
             $this->applyEvent($event);
+//            $version++;
         }
 
-        $this->storage->save($this->tasks);
+        $this->storage->save($this->tasks/*, $version*/);
     }
 
     public function rebuild(EventStream $eventStream) : void
@@ -99,6 +104,8 @@ final class AllTasksProjector
         $this->assertTaskAlreadyExists($event);
 
         $taskId = $event->taskId();
+
+//        $this->getUserById->execute(Id::fromString());
 
         $this->tasks[$taskId]['lastCompletedAt'] = $event->timestamp();
         $this->tasks[$taskId]['lastCompletedBy'] = $event->by();

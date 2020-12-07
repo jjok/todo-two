@@ -16,8 +16,9 @@ final class AllTasksStorage implements AllTasksStorageInterface
     }
 
     private $filename;
+//    private $version = 0;
 
-    public function save(array $allTasks): void
+    public function save(array $allTasks/*, int $version*/): void
     {
         $data = array(
 //            'version' => $version,
@@ -35,4 +36,9 @@ final class AllTasksStorage implements AllTasksStorageInterface
 
         return $decoded['data'] ?? [];
     }
+
+//    public function version(): int
+//    {
+//        return $this->version;
+//    }
 }

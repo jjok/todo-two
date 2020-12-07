@@ -5,25 +5,11 @@ namespace jjok\TodoTwo\Domain\Task\Commands;
 use jjok\TodoTwo\Domain\Task\Id as TaskId;
 use jjok\TodoTwo\Domain\Task\Query\GetById;
 use jjok\TodoTwo\Domain\Task\Query\TaskNotFound;
-use jjok\TodoTwo\Domain\User;
 use jjok\TodoTwo\Domain\User\Id as UserId;
 use jjok\TodoTwo\Domain\User\NotFound as UserNotFound;
-use jjok\TodoTwo\Infrastructure\InMemory\GetUserById;
 
 final class CompleteTaskTest extends CommandTest
 {
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        $this->getUserById = new GetUserById(
-            new User(UserId::fromString('887ca7d3-27e3-4964-8378-0f3d0d4aa6d3'), 'Jonathan'),
-            new User(UserId::fromString('1a6d2a28-e9ca-4695-875d-f80ab4c9b8d6'), 'Someone Else')
-        );
-    }
-
-    private $getUserById;
-
     /**
      * @test
      * @testWith ["4ef9c809-3e53-4341-a32f-cf3249df65cc", "887ca7d3-27e3-4964-8378-0f3d0d4aa6d3", "Jonathan"    ]
