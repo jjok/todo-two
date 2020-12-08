@@ -5,6 +5,7 @@ namespace jjok\TodoTwo\Domain\Task\Projections;
 use jjok\TodoTwo\Domain\EventStream;
 use jjok\TodoTwo\Domain\Task\Event as TaskEvent;
 use jjok\TodoTwo\Domain\Task\Events\TaskPriorityWasChanged;
+use jjok\TodoTwo\Domain\Task\Events\TaskWasArchived;
 use jjok\TodoTwo\Domain\Task\Events\TaskWasCompleted;
 use jjok\TodoTwo\Domain\Task\Events\TaskWasCreated;
 use jjok\TodoTwo\Domain\Task\Events\TaskWasRenamed;
@@ -71,6 +72,11 @@ final class AllTasksProjector
                 /** @var TaskPriorityWasChanged $event */
                 $this->applyTaskPriorityWasChanged($event);
                 break;
+
+            case TaskWasArchived::class:
+                /** @var TaskWasArchived $event */
+                $this->applyTaskWasArchived($event);
+                break;
         }
     }
 
@@ -87,6 +93,7 @@ final class AllTasksProjector
             'priority' => $event->priority(),
             'lastCompletedAt' => null,
             'lastCompletedBy' => null,
+            'isArchived' => false,
         );
     }
 
@@ -129,6 +136,16 @@ final class AllTasksProjector
         $taskId = $event->taskId();
 
         $this->tasks[$taskId]['priority'] = $event->to();
+    }
+
+    /** @throws InvalidEventStream */
+    private function applyTaskWasArchived(TaskWasArchived $event) : void
+    {
+        $this->assertTaskAlreadyExists($event);
+
+        $taskId = $event->taskId();
+
+        $this->tasks[$taskId]['isArchived'] = true;
     }
 
     /** @throws InvalidEventStream */

@@ -3,6 +3,7 @@
 namespace jjok\TodoTwo\Domain;
 
 use jjok\TodoTwo\Domain\Task\Events\TaskPriorityWasChanged;
+use jjok\TodoTwo\Domain\Task\Events\TaskWasArchived;
 use jjok\TodoTwo\Domain\Task\Events\TaskWasCompleted;
 use jjok\TodoTwo\Domain\Task\Events\TaskWasCreated;
 use jjok\TodoTwo\Domain\Task\Events\TaskWasRenamed;
@@ -15,16 +16,6 @@ final class Task
 {
     use EmitsEvents;
 
-//    public static function create(string $name, int $priority) : self
-//    {
-//        $id = Id::generate();
-//        $taskWasCreated = TaskWasCreated::with($id, $name, Priority::fromInt($priority));
-//        $task = self::fromEvents($taskWasCreated);
-//        $task->recordThat($taskWasCreated);
-//
-//        return $task;
-//    }
-
     public static function create(string $id, string $name, int $priority) : self
     {
         $taskWasCreated = TaskWasCreated::with(Id::fromString($id), $name, Priority::fromInt($priority));
@@ -36,6 +27,7 @@ final class Task
 
     public static function fromEvents(Event ...$events) : self
     {
+        /** @var TaskWasCreated $taskWasCreated */
         $taskWasCreated = array_shift($events);
         $task = new self($taskWasCreated);
 
@@ -53,8 +45,12 @@ final class Task
         $this->priority = $taskWasCreated->priority();
     }
 
-    private $id, $name, $priority;
-    private $lastCompletedAt, $lastCompletedBy;
+    private Id $id;
+    private string $name;
+    private int $priority;
+    private int $lastCompletedAt;
+    private string $lastCompletedBy;
+    private bool $isArchived = false;
 
     public function complete(UserId $userId, string $by) : void
     {
@@ -80,6 +76,18 @@ final class Task
         $this->apply($taskPriorityWasChanged);
     }
 
+    public function archive() : void
+    {
+        if($this->isArchived) {
+            return;
+        }
+
+        $taskWasArchived = TaskWasArchived::with($this->id);
+
+        $this->recordThat($taskWasArchived);
+        $this->apply($taskWasArchived);
+    }
+
     private function apply(Event $event) : void
     {
         $this->assertEventIsForThisTask($event);
@@ -99,6 +107,11 @@ final class Task
             case TaskPriorityWasChanged::class:
                 /** @var TaskPriorityWasChanged $event */
                 $this->priority = $event->to();
+                break;
+
+            case TaskWasArchived::class:
+                /** @var TaskWasArchived $event */
+                $this->isArchived = true;
                 break;
 
             default:

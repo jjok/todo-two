@@ -90,7 +90,7 @@ final class AllTasksProjectorTest extends TestCase
         $storage = new TempAllTasksStorage();
         $projection = new AllTasksProjector($storage);
 
-        $this->assertEquals([], $storage->load());
+        self::assertEquals([], $storage->load());
     }
 
     public function eventProvider() : array
@@ -105,6 +105,7 @@ final class AllTasksProjectorTest extends TestCase
                     'priority' => 50,
                     'lastCompletedAt' => null,
                     'lastCompletedBy' => null,
+                    'isArchived' => false,
                 )
             ]],
             [[
@@ -117,6 +118,7 @@ final class AllTasksProjectorTest extends TestCase
                     'priority' => 50,
                     'lastCompletedAt' => null,
                     'lastCompletedBy' => null,
+                    'isArchived' => false,
                 ),
                 '4ef9c809-3e53-4341-a32f-cf3249df65dd' => array(
                     'id' => '4ef9c809-3e53-4341-a32f-cf3249df65dd',
@@ -124,6 +126,7 @@ final class AllTasksProjectorTest extends TestCase
                     'priority' => 60,
                     'lastCompletedAt' => null,
                     'lastCompletedBy' => null,
+                    'isArchived' => false,
                 ),
             ]],
             [[
@@ -137,6 +140,7 @@ final class AllTasksProjectorTest extends TestCase
                     'priority' => 50,
                     'lastCompletedAt' => 123456789,
                     'lastCompletedBy' => 'Jonathan',
+                    'isArchived' => false,
                 ),
                 '4ef9c809-3e53-4341-a32f-cf3249df65dd' => array(
                     'id' => '4ef9c809-3e53-4341-a32f-cf3249df65dd',
@@ -144,6 +148,7 @@ final class AllTasksProjectorTest extends TestCase
                     'priority' => 60,
                     'lastCompletedAt' => null,
                     'lastCompletedBy' => null,
+                    'isArchived' => false,
                 ),
             ]],
             [[
@@ -158,6 +163,7 @@ final class AllTasksProjectorTest extends TestCase
                     'priority' => 50,
                     'lastCompletedAt' => 123456789,
                     'lastCompletedBy' => 'Jonathan',
+                    'isArchived' => false,
                 ),
                 '4ef9c809-3e53-4341-a32f-cf3249df65dd' => array(
                     'id' => '4ef9c809-3e53-4341-a32f-cf3249df65dd',
@@ -165,6 +171,7 @@ final class AllTasksProjectorTest extends TestCase
                     'priority' => 60,
                     'lastCompletedAt' => null,
                     'lastCompletedBy' => null,
+                    'isArchived' => false,
                 ),
             ]],
             [[
@@ -180,6 +187,7 @@ final class AllTasksProjectorTest extends TestCase
                     'priority' => 20,
                     'lastCompletedAt' => 123456789,
                     'lastCompletedBy' => 'Jonathan',
+                    'isArchived' => false,
                 ),
                 '4ef9c809-3e53-4341-a32f-cf3249df65dd' => array(
                     'id' => '4ef9c809-3e53-4341-a32f-cf3249df65dd',
@@ -187,6 +195,7 @@ final class AllTasksProjectorTest extends TestCase
                     'priority' => 60,
                     'lastCompletedAt' => null,
                     'lastCompletedBy' => null,
+                    'isArchived' => false,
                 ),
             ]],
             [[
@@ -203,6 +212,7 @@ final class AllTasksProjectorTest extends TestCase
                     'priority' => 20,
                     'lastCompletedAt' => 123456789,
                     'lastCompletedBy' => 'Jonathan',
+                    'isArchived' => false,
                 ),
                 '4ef9c809-3e53-4341-a32f-cf3249df65dd' => array(
                     'id' => '4ef9c809-3e53-4341-a32f-cf3249df65dd',
@@ -210,6 +220,7 @@ final class AllTasksProjectorTest extends TestCase
                     'priority' => 60,
                     'lastCompletedAt' => 234567890,
                     'lastCompletedBy' => 'Someone Else',
+                    'isArchived' => false,
                 ),
             ]],
             [[
@@ -227,6 +238,7 @@ final class AllTasksProjectorTest extends TestCase
                     'priority' => 20,
                     'lastCompletedAt' => 123456789,
                     'lastCompletedBy' => 'Jonathan',
+                    'isArchived' => false,
                 ),
                 '4ef9c809-3e53-4341-a32f-cf3249df65dd' => array(
                     'id' => '4ef9c809-3e53-4341-a32f-cf3249df65dd',
@@ -234,6 +246,7 @@ final class AllTasksProjectorTest extends TestCase
                     'priority' => 99,
                     'lastCompletedAt' => 234567890,
                     'lastCompletedBy' => 'Someone Else',
+                    'isArchived' => false,
                 ),
             ]],
             [[
@@ -252,6 +265,7 @@ final class AllTasksProjectorTest extends TestCase
                     'priority' => 20,
                     'lastCompletedAt' => 123456789,
                     'lastCompletedBy' => 'Jonathan',
+                    'isArchived' => false,
                 ),
                 '4ef9c809-3e53-4341-a32f-cf3249df65dd' => array(
                     'id' => '4ef9c809-3e53-4341-a32f-cf3249df65dd',
@@ -259,6 +273,7 @@ final class AllTasksProjectorTest extends TestCase
                     'priority' => 99,
                     'lastCompletedAt' => 234567890,
                     'lastCompletedBy' => 'Someone Else',
+                    'isArchived' => false,
                 ),
             ]],
         ];
@@ -274,7 +289,7 @@ final class AllTasksProjectorTest extends TestCase
         $projection = new AllTasksProjector($storage);
         $projection->apply($events);
 
-        $this->assertEquals($expectedProjection, $storage->load());
+        self::assertEquals($expectedProjection, $storage->load());
     }
 
 //    /** @test */
@@ -369,6 +384,6 @@ final class AllTasksProjectorTest extends TestCase
 
         $projection->rebuild($eventStream);
 
-        $this->assertEquals($expectedProjection, $storage->load());
+        self::assertEquals($expectedProjection, $storage->load());
     }
 }

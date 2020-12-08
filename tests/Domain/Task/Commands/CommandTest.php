@@ -26,7 +26,7 @@ abstract class CommandTest extends TestCase
         $this->projection = new TempAllTasksStorage();
         $this->eventStore = new ProjectionBuildingEventStore(
             new EventStore($file),
-            new AllTasksProjector($this->projection, $this->getUserById)
+            new AllTasksProjector($this->projection/*, $this->getUserById*/)
         );
         $this->eventStream = new EventStream($file);
     }
@@ -54,6 +54,6 @@ abstract class CommandTest extends TestCase
             }
         }
 
-        $this->fail(sprintf('Task "%s" does not exist.', $id));
+        self::fail(sprintf('Task "%s" does not exist.', $id));
     }
 }

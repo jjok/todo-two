@@ -9,7 +9,7 @@ trait EmitsEvents
         $this->events[] = $occurred;
     }
 
-    private $events = [];
+    private array $events = [];
 
     public function releaseEvents() : array
     {
