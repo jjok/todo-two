@@ -1,5 +1,6 @@
 {
     "name": "jjok/todo-two-domain",
+    "description": "Event sourced recurring task library.",
     "autoload": {
         "psr-4": {"jjok\\TodoTwo\\": "src/"}
     },
@@ -7,13 +8,13 @@
         "psr-4": {"jjok\\TodoTwo\\": "tests/"}
     },
     "require": {
-        "php": "^7.2",
+        "php": ">=7.4",
         "ext-json": "*",
         "ramsey/uuid": "^3.8"
     },
     "require-dev": {
         "ext-dom": "*",
         "phpunit/phpunit": "^8.3",
-        "roave/security-advisories": "dev-master"
+        "roave/security-advisories": "dev-latest"
     }
 }
