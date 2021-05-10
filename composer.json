@@ -10,11 +10,11 @@
     "require": {
         "php": ">=7.4",
         "ext-json": "*",
-        "ramsey/uuid": "^3.8"
+        "ramsey/uuid": "^4.1"
     },
     "require-dev": {
         "ext-dom": "*",
-        "phpunit/phpunit": "^8.3",
-        "roave/security-advisories": "dev-latest"
+        "roave/security-advisories": "dev-latest",
+        "phpunit/phpunit": "^9.5"
     }
 }
