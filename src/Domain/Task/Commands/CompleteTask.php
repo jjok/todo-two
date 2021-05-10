@@ -18,7 +18,9 @@ final class CompleteTask
         $this->getUserById = $getUserById;
     }
 
-    private $eventStore, $getTaskById, $getUserById;
+    private EventStore $eventStore;
+    private GetTaskById $getTaskById;
+    private GetUserById $getUserById;
 
     /**
      * @throws TaskNotFound

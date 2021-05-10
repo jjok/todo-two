@@ -12,7 +12,7 @@ final class CreateTask
         $this->eventStore = $eventStore;
     }
 
-    private $eventStore;
+    private EventStore $eventStore;
 
     public function execute(string $id, string $name, int $priority) : void
     {

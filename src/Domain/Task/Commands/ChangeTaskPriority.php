@@ -15,7 +15,8 @@ final class ChangeTaskPriority
         $this->getTaskById = $getTaskById;
     }
 
-    private $eventStore, $getTaskById;
+    private EventStore $eventStore;
+    private GetTaskById $getTaskById;
 
     /** @throws TaskNotFound */
     public function execute(string $id, int $newPriority) : void

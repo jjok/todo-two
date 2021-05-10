@@ -15,7 +15,8 @@ final class RenameTask
         $this->getTaskById = $getTaskById;
     }
 
-    private $eventStore, $getTaskById;
+    private EventStore $eventStore;
+    private GetTaskById $getTaskById;
 
     /** @throws TaskNotFound */
     public function execute(TaskId $id, string $newName) : void
