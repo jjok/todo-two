@@ -3,6 +3,7 @@
 namespace jjok\TodoTwo\Domain;
 
 use jjok\TodoTwo\Domain\Task\Events\TaskPriorityWasChanged;
+use jjok\TodoTwo\Domain\Task\Events\TaskWasArchived;
 use jjok\TodoTwo\Domain\Task\Events\TaskWasCompleted;
 use jjok\TodoTwo\Domain\Task\Events\TaskWasCreated;
 use jjok\TodoTwo\Domain\Task\Events\TaskWasRenamed;
@@ -66,6 +67,12 @@ final class SerialisedEvent
                 return new TaskPriorityWasChanged(
                     $this->payload['taskId'],
                     $this->payload['to'],
+                    $this->payload['timestamp']
+                );
+
+            case TaskWasArchived::class:
+                return new TaskWasArchived(
+                    $this->payload['taskId'],
                     $this->payload['timestamp']
                 );
         }

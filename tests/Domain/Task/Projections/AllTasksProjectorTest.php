@@ -4,6 +4,7 @@ namespace jjok\TodoTwo\Domain\Task\Projections;
 
 use jjok\TodoTwo\Domain\Event;
 use jjok\TodoTwo\Domain\Task\Events\TaskPriorityWasChanged;
+use jjok\TodoTwo\Domain\Task\Events\TaskWasArchived;
 use jjok\TodoTwo\Domain\Task\Events\TaskWasCompleted;
 use jjok\TodoTwo\Domain\Task\Events\TaskWasCreated;
 use jjok\TodoTwo\Domain\Task\Events\TaskWasRenamed;
@@ -50,6 +51,13 @@ final class AllTasksProjectorTest extends TestCase
         );
     }
 
+    private function task1WasArchived() : TaskWasArchived
+    {
+        return TaskWasArchived::with(
+            Id::fromString('4ef9c809-3e53-4341-a32f-cf3249df65cc')
+        );
+    }
+
     private function task2WasCreated() : TaskWasCreated
     {
         return TaskWasCreated::with(
@@ -81,6 +89,13 @@ final class AllTasksProjectorTest extends TestCase
         return TaskPriorityWasChanged::with(
             Id::fromString('4ef9c809-3e53-4341-a32f-cf3249df65dd'),
             Priority::fromInt(99)
+        );
+    }
+
+    private function task2WasArchived() : TaskWasArchived
+    {
+        return TaskWasArchived::with(
+            Id::fromString('4ef9c809-3e53-4341-a32f-cf3249df65dd')
         );
     }
 
@@ -274,6 +289,63 @@ final class AllTasksProjectorTest extends TestCase
                     'lastCompletedAt' => 234567890,
                     'lastCompletedBy' => 'Someone Else',
                     'isArchived' => false,
+                ),
+            ]],
+            [[
+                $this->task1WasCreated(),
+                $this->task2WasCreated(),
+                $this->task1WasCompleted(),
+                $this->task1WasRenamed(),
+                $this->task1PriorityWasChanged(),
+                $this->task2WasCompleted(),
+                $this->task2PriorityWasChanged(),
+                $this->task2WasRenamed(),
+                $this->task2WasArchived(),
+            ], [
+                '4ef9c809-3e53-4341-a32f-cf3249df65cc' => array(
+                    'id' => '4ef9c809-3e53-4341-a32f-cf3249df65cc',
+                    'name' => 'A different name',
+                    'priority' => 20,
+                    'lastCompletedAt' => 123456789,
+                    'lastCompletedBy' => 'Jonathan',
+                    'isArchived' => false,
+                ),
+                '4ef9c809-3e53-4341-a32f-cf3249df65dd' => array(
+                    'id' => '4ef9c809-3e53-4341-a32f-cf3249df65dd',
+                    'name' => 'A second task',
+                    'priority' => 99,
+                    'lastCompletedAt' => 234567890,
+                    'lastCompletedBy' => 'Someone Else',
+                    'isArchived' => true,
+                ),
+            ]],
+            [[
+                $this->task1WasCreated(),
+                $this->task2WasCreated(),
+                $this->task1WasCompleted(),
+                $this->task1WasRenamed(),
+                $this->task1PriorityWasChanged(),
+                $this->task2WasCompleted(),
+                $this->task2PriorityWasChanged(),
+                $this->task2WasRenamed(),
+                $this->task2WasArchived(),
+                $this->task1WasArchived(),
+            ], [
+                '4ef9c809-3e53-4341-a32f-cf3249df65cc' => array(
+                    'id' => '4ef9c809-3e53-4341-a32f-cf3249df65cc',
+                    'name' => 'A different name',
+                    'priority' => 20,
+                    'lastCompletedAt' => 123456789,
+                    'lastCompletedBy' => 'Jonathan',
+                    'isArchived' => true,
+                ),
+                '4ef9c809-3e53-4341-a32f-cf3249df65dd' => array(
+                    'id' => '4ef9c809-3e53-4341-a32f-cf3249df65dd',
+                    'name' => 'A second task',
+                    'priority' => 99,
+                    'lastCompletedAt' => 234567890,
+                    'lastCompletedBy' => 'Someone Else',
+                    'isArchived' => true,
                 ),
             ]],
         ];
