@@ -95,17 +95,23 @@ final class Task
         switch(get_class($event)) {
             case TaskWasCompleted::class:
                 /** @var TaskWasCompleted $event */
+                $this->assertTaskCanBeCompleted();
+
                 $this->lastCompletedBy = $event->by();
                 $this->lastCompletedAt = $event->timestamp();
                 break;
 
             case TaskWasRenamed::class:
                 /** @var TaskWasRenamed $event */
+                $this->assertTaskCanBeChanged();
+
                 $this->name = $event->to();
                 break;
 
             case TaskPriorityWasChanged::class:
                 /** @var TaskPriorityWasChanged $event */
+                $this->assertTaskCanBeChanged();
+
                 $this->priority = $event->to();
                 break;
 
@@ -131,5 +137,35 @@ final class Task
                 $this->id->toString()
             ));
         }
+    }
+
+    private function assertTaskCanBeCompleted() : void
+    {
+        if($this->isArchived) {
+            throw AnArchivedTaskCannotBeCompleted::for($this->id);
+        }
+    }
+
+    private function assertTaskCanBeChanged() : void
+    {
+        if($this->isArchived) {
+            throw AnArchivedTaskCannotBeChanged::for($this->id);
+        }
+    }
+}
+
+final class AnArchivedTaskCannotBeCompleted extends \RuntimeException
+{
+    public static function for(Id $taskId) : self
+    {
+        return new self(sprintf('Task %s cannot be completed as it has been archived.', $taskId->toString()));
+    }
+}
+
+final class AnArchivedTaskCannotBeChanged extends \RuntimeException
+{
+    public static function for(Id $taskId) : self
+    {
+        return new self(sprintf('Task %s cannot be changed as it has been archived.', $taskId->toString()));
     }
 }

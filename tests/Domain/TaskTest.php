@@ -3,6 +3,7 @@
 namespace jjok\TodoTwo\Domain;
 
 use jjok\TodoTwo\Domain\Task\Events\TaskPriorityWasChanged;
+use jjok\TodoTwo\Domain\Task\Events\TaskWasArchived;
 use jjok\TodoTwo\Domain\Task\Events\TaskWasCompleted;
 use jjok\TodoTwo\Domain\Task\Events\TaskWasCreated;
 use jjok\TodoTwo\Domain\Task\Events\TaskWasRenamed;
@@ -209,6 +210,73 @@ final class TaskTest extends TestCase
         $this->expectExceptionMessage('Priority must be between 1 and 100');
 
         $task->updatePriority($priority);
+    }
+
+    /** @test */
+    public function an_existing_task_can_archived() : void
+    {
+        $task = $this->previouslyCreatedEvent();
+
+        $task->archive();
+
+        $this->assertTaskWasRecentlyArchived($task);
+    }
+
+    /** @test */
+    public function an_archived_task_cannot_be_archived_again() : void
+    {
+        $task = $this->previouslyCreatedEvent();
+
+        $task->archive();
+        $task->archive();
+
+        $this->assertTaskWasRecentlyArchived($task);
+    }
+
+    private function assertTaskWasRecentlyArchived(Task $task) : void
+    {
+        $events = $task->releaseEvents();
+
+        /** @var TaskWasArchived $taskWasArchived */
+        [$taskWasArchived] = $events;
+
+        self::assertInstanceOf(TaskWasArchived::class, $taskWasArchived);
+        $this->assertEventHappenedRecently($taskWasArchived);
+    }
+
+    /** @test */
+    public function an_archived_task_cannot_be_completed() : void
+    {
+        $task = $this->previouslyCreatedEvent();
+        $userId = UserId::fromString('1a6d2a28-e9ca-4695-875d-f80ab4c9b8d6');
+        $userName = 'Jonathan';
+
+        $this->expectException(AnArchivedTaskCannotBeCompleted::class);
+
+        $task->archive();
+        $task->complete($userId, $userName);
+    }
+
+    /** @test */
+    public function an_archived_task_cannot_be_renamed() : void
+    {
+        $task = $this->previouslyCreatedEvent();
+
+        $this->expectException(AnArchivedTaskCannotBeChanged::class);
+
+        $task->archive();
+        $task->rename('anything');
+    }
+
+    /** @test */
+    public function an_archived_task_cannot_have_its_priority_changed() : void
+    {
+        $task = $this->previouslyCreatedEvent();
+
+        $this->expectException(AnArchivedTaskCannotBeChanged::class);
+
+        $task->archive();
+        $task->updatePriority(70);
     }
 
     private function assertTaskIdIsValid(Event $event) : void
