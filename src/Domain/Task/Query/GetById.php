@@ -8,12 +8,12 @@ use jjok\TodoTwo\Domain\Task\Id as TaskId;
 
 final class GetById
 {
-    private EventStream $eventStream;
-
     public function __construct(EventStream $eventStream)
     {
         $this->eventStream = $eventStream;
     }
+
+    private EventStream $eventStream;
 
     /**
      * @throws TaskNotFound

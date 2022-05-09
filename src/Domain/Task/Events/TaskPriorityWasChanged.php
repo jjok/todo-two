@@ -20,7 +20,8 @@ final class TaskPriorityWasChanged implements Event
         $this->timestamp = $timestamp;
     }
 
-    private $taskId, $to, $timestamp;
+    private string $taskId;
+    private int $to, $timestamp;
 
     public function taskId() : string
     {

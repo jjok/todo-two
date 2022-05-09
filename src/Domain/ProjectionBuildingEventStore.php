@@ -12,7 +12,8 @@ final class ProjectionBuildingEventStore implements EventStore
         $this->projector = $allTasksProjector;
     }
 
-    private $eventStore, $projector;
+    private EventStore $eventStore;
+    private AllTasksProjector $projector;
 
     public function push(Event ...$events): void
     {

@@ -21,7 +21,8 @@ final class TaskWasCreated implements Event
         $this->timestamp = $timestamp;
     }
 
-    private $id, $name, $priority, $timestamp;
+    private string $id, $name;
+    private int $priority, $timestamp;
 
     public function taskId() : string
     {

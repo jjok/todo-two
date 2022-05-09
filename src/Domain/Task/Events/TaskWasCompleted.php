@@ -19,7 +19,8 @@ final class TaskWasCompleted implements Event
         $this->timestamp = $timestamp;
     }
 
-    private $taskId, $by, $timestamp;
+    private string $taskId, $by;
+    private int $timestamp;
 
     public function taskId() : string
     {

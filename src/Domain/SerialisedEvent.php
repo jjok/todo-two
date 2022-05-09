@@ -28,7 +28,8 @@ final class SerialisedEvent
         $this->payload = $payload;
     }
 
-    private $eventName, $payload;
+    private string $eventName;
+    private array $payload;
 
     public function toJson() : string
     {

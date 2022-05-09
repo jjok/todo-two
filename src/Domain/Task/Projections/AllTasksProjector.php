@@ -20,7 +20,7 @@ final class AllTasksProjector
 //        $this->getUserById = $getUserById;
     }
 
-    private $storage, $getUserById;
+    private AllTasksStorage $storage;
     private $tasks = [];
 
     /** @throws InvalidEventStream */

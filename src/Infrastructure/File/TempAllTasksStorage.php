@@ -12,7 +12,8 @@ final class TempAllTasksStorage implements AllTasksStorageInterface
         $this->storage = new AllTasksStorage($this->filename);
     }
 
-    private $filename, $storage;
+    private string $filename;
+    private AllTasksStorage $storage;
 
     public function save(array $allTasks/*, int $version*/): void
     {
@@ -24,10 +25,10 @@ final class TempAllTasksStorage implements AllTasksStorageInterface
         return $this->storage->load();
     }
 
-    public function version(): int
-    {
-        return $this->storage->version();
-    }
+//    public function version(): int
+//    {
+//        return $this->storage->version();
+//    }
 
     public function __destruct()
     {

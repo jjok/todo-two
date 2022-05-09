@@ -19,7 +19,8 @@ final class TaskWasRenamed implements Event
         $this->timestamp = $timestamp;
     }
 
-    private $taskId, $to, $timestamp;
+    private string $taskId, $to;
+    private int $timestamp;
 
     public function taskId() : string
     {

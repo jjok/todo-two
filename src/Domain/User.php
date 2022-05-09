@@ -12,7 +12,8 @@ final class User
         $this->name = $name;
     }
 
-    private $id, $name;
+    private Id $id;
+    private string $name;
 
     public function id() : Id
     {
