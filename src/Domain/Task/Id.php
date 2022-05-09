@@ -25,7 +25,7 @@ final class Id
         $this->uuid = $uuid;
     }
 
-    private $uuid;
+    private UuidInterface $uuid;
 
     public function toString() : string
     {

@@ -8,7 +8,7 @@ use jjok\TodoTwo\Domain\Task\Id as TaskId;
 
 final class GetById
 {
-    private $eventStream;
+    private EventStream $eventStream;
 
     public function __construct(EventStream $eventStream)
     {

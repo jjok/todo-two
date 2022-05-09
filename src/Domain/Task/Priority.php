@@ -18,7 +18,7 @@ final class Priority
         $this->value = $value;
     }
 
-    private $value;
+    private int $value;
 
     public function toInt() : int
     {
